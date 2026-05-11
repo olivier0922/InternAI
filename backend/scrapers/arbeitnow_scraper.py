@@ -15,8 +15,8 @@ def scrape_arbeitnow_jobs() -> List[JobCreate]:
     """Fetch software/engineering jobs from Arbeitnow's free API (multiple pages)."""
     jobs: List[JobCreate] = []
     
-    # Fetch up to 8 pages
-    for page in range(1, 9):
+    # Fetch up to 25 pages
+    for page in range(1, 26):
         url = f"https://www.arbeitnow.com/api/job-board-api?page={page}"
         
         try:

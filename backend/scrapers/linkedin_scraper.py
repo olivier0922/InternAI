@@ -22,14 +22,26 @@ def _first(selectors):
 
 # Search queries to run
 SEARCH_QUERIES = [
-    # General queries
+    # ── Montreal General ──
     ("software engineer", "Montreal, QC"),
     ("developer", "Montreal, QC"),
     ("data scientist", "Montreal, QC"),
     ("devops", "Montreal, QC"),
     ("machine learning", "Montreal, QC"),
+    ("frontend developer", "Montreal, QC"),
+    ("backend developer", "Montreal, QC"),
+    ("python developer", "Montreal, QC"),
+    ("java developer", "Montreal, QC"),
+    ("react developer", "Montreal, QC"),
+    ("cloud engineer", "Montreal, QC"),
+    ("QA engineer", "Montreal, QC"),
+    ("data engineer", "Montreal, QC"),
+    ("full stack developer", "Montreal, QC"),
+    ("web developer", "Montreal, QC"),
+    ("AI engineer", "Montreal, QC"),
+    ("product manager", "Montreal, QC"),
 
-    # Expanded Montreal Intern Queries
+    # ── Montreal Intern Queries ──
     ("intern", "Montreal, QC"),
     ("stage", "Montreal, QC"),
     ("stagiaire", "Montreal, QC"),
@@ -42,21 +54,64 @@ SEARCH_QUERIES = [
     ("frontend intern", "Montreal, QC"),
     ("backend intern", "Montreal, QC"),
 
-    # Other Locations
+    # ── Toronto ──
     ("software engineer", "Toronto, ON"),
     ("developer", "Toronto, ON"),
     ("software intern", "Toronto, ON"),
+    ("data scientist", "Toronto, ON"),
+    ("frontend developer", "Toronto, ON"),
+    ("backend developer", "Toronto, ON"),
+    ("full stack developer", "Toronto, ON"),
+    ("devops", "Toronto, ON"),
+    ("machine learning", "Toronto, ON"),
+    ("intern", "Toronto, ON"),
+
+    # ── Vancouver ──
+    ("software engineer", "Vancouver, BC"),
+    ("developer", "Vancouver, BC"),
+    ("software intern", "Vancouver, BC"),
+    ("data scientist", "Vancouver, BC"),
+
+    # ── Ottawa ──
+    ("software engineer", "Ottawa, ON"),
+    ("developer", "Ottawa, ON"),
+    ("software intern", "Ottawa, ON"),
+
+    # ── Canada-wide ──
     ("software engineer", "Canada"),
     ("python developer", "Canada"),
     ("react developer", "Canada"),
     ("full stack developer", "Canada"),
     ("intern software", "Canada"),
-    
-    # Global/Remote queries
+    ("data engineer", "Canada"),
+    ("machine learning", "Canada"),
+    ("cloud engineer", "Canada"),
+    ("devops", "Canada"),
+
+    # ── US Major Cities ──
+    ("software engineer", "New York, NY"),
+    ("developer", "New York, NY"),
+    ("software intern", "New York, NY"),
+    ("software engineer", "San Francisco, CA"),
+    ("developer", "San Francisco, CA"),
+    ("software intern", "San Francisco, CA"),
+    ("software engineer", "Seattle, WA"),
+    ("developer", "Seattle, WA"),
+    ("software engineer", "Austin, TX"),
+    ("software engineer", "Chicago, IL"),
+    ("software engineer", "Boston, MA"),
+    ("software engineer", "Los Angeles, CA"),
+
+    # ── Global/Remote ──
     ("software engineer intern", ""),
     ("frontend developer", "Remote"),
     ("backend developer", "Remote"),
     ("data engineer", "Remote"),
+    ("software engineer", "Remote"),
+    ("full stack developer", "Remote"),
+    ("machine learning engineer", "Remote"),
+    ("devops engineer", "Remote"),
+    ("python developer", "Remote"),
 ]
 
 def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
@@ -64,10 +119,9 @@ def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
     
     queries = list(SEARCH_QUERIES)
     if dynamic_skills:
-        for skill in dynamic_skills[:10]:
+        for skill in dynamic_skills[:3]:
             queries.insert(0, (f"{skill} developer", "Montreal, QC"))
-            queries.insert(0, (f"{skill} engineer", "Remote"))
-            queries.insert(0, (f"{skill}", "Canada"))
+            queries.insert(0, (f"{skill} engineer", "Canada"))
             
     try:
         from scrapling.fetchers import StealthyFetcher
@@ -80,7 +134,7 @@ def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
 
     for keywords, location in queries:
         # Scale up to 10 pages (250 jobs per query)
-        for start_idx in range(0, 250, 25):
+        for start_idx in range(0, 100, 25):
             try:
                 kw = keywords.replace(' ', '%20')
                 loc = location.replace(' ', '%20').replace(',', '%2C')

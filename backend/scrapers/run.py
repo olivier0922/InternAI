@@ -62,6 +62,84 @@ def clean_url(url: str) -> str:
     except:
         return url
 
+def is_north_america(location: str) -> bool:
+    """Return True if location appears to be in Canada, USA, or is Remote/unspecified."""
+    if not location:
+        return True  # Unknown location — keep it
+    loc = location.lower().strip()
+
+    # Always keep remote / flexible / worldwide
+    if any(kw in loc for kw in ["remote", "anywhere", "worldwide", "global", "flexible", "work from home", "wfh"]):
+        return True
+
+    # Canadian indicators
+    ca_provinces = [
+        "canada", "montreal", "montréal", "toronto", "vancouver", "ottawa",
+        "calgary", "edmonton", "winnipeg", "quebec", "québec", "halifax",
+        "kitchener", "waterloo", "victoria", "saskatoon", "regina",
+        "hamilton", "london, on", "brampton", "mississauga", "laval",
+        "gatineau", "markham", "burnaby", "surrey", "richmond, bc",
+        ", qc", ", on", ", bc", ", ab", ", mb", ", sk", ", ns", ", nb",
+        ", pe", ", nl", "ontario", "british columbia", "alberta",
+        "manitoba", "saskatchewan", "nova scotia", "new brunswick",
+    ]
+    if any(kw in loc for kw in ca_provinces):
+        return True
+
+    # US indicators
+    us_states = [
+        "united states", "usa", ", us",
+        "new york", "san francisco", "los angeles", "chicago", "seattle",
+        "austin", "boston", "denver", "dallas", "houston", "atlanta",
+        "phoenix", "san diego", "san jose", "portland", "miami",
+        "philadelphia", "minneapolis", "detroit", "charlotte",
+        "nashville", "raleigh", "pittsburgh", "columbus", "indianapolis",
+        "salt lake", "washington", "d.c.", "dc",
+        ", ny", ", ca", ", tx", ", wa", ", il", ", ma", ", co", ", ga",
+        ", fl", ", pa", ", nc", ", oh", ", mn", ", mi", ", az", ", or",
+        ", va", ", md", ", ct", ", nj", ", ut", ", tn", ", mo", ", wi",
+        ", in", ", sc", ", ky", ", la", ", ok", ", ia", ", ar", ", ks",
+        ", nv", ", nm", ", ne", ", wv", ", id", ", hi", ", me", ", nh",
+        ", ri", ", mt", ", de", ", sd", ", nd", ", ak", ", vt", ", wy",
+        "california", "texas", "florida", "illinois", "pennsylvania",
+        "ohio", "georgia", "north carolina", "michigan", "new jersey",
+        "virginia", "massachusetts", "arizona", "colorado", "tennessee",
+        "indiana", "maryland", "minnesota", "missouri", "wisconsin",
+        "oregon", "connecticut", "iowa", "arkansas", "kansas", "nevada",
+        "utah", "kentucky", "louisiana",
+    ]
+    if any(kw in loc for kw in us_states):
+        return True
+
+    # Reject known non-NA countries
+    non_na = [
+        "germany", "deutschland", "uk", "united kingdom", "london, uk",
+        "france", "paris", "india", "bangalore", "mumbai", "delhi",
+        "australia", "sydney", "melbourne", "brazil", "são paulo",
+        "netherlands", "amsterdam", "spain", "madrid", "barcelona",
+        "italy", "milan", "rome", "japan", "tokyo", "china", "beijing",
+        "shanghai", "singapore", "ireland", "dublin", "portugal", "lisbon",
+        "sweden", "stockholm", "norway", "oslo", "denmark", "copenhagen",
+        "finland", "helsinki", "poland", "warsaw", "czech", "prague",
+        "austria", "vienna", "switzerland", "zurich", "belgium", "brussels",
+        "south korea", "seoul", "taiwan", "israel", "tel aviv",
+        "south africa", "nigeria", "kenya", "argentina", "buenos aires",
+        "colombia", "bogota", "chile", "santiago", "mexico", "emea",
+        "apac", "latam", "europe", "asia", "africa", "middle east",
+        "philippines", "manila", "vietnam", "thailand", "bangkok",
+        "indonesia", "jakarta", "malaysia", "kuala lumpur", "pakistan",
+        "egypt", "cairo", "turkey", "istanbul", "romania", "bucharest",
+        "ukraine", "kyiv", "hungary", "budapest", "croatia", "serbia",
+        "greece", "athens", "bulgaria", "sofia", "estonia", "tallinn",
+        "latvia", "riga", "lithuania", "vilnius", "luxembourg",
+    ]
+    if any(kw in loc for kw in non_na):
+        return False
+
+    # If we can't determine, keep it (benefit of the doubt)
+    return True
+
+
 def insert_jobs(jobs, source_name):
     if not supabase:
         print(f"  [WARN] Supabase not configured. Would have inserted {len(jobs)} jobs.")
@@ -74,8 +152,14 @@ def insert_jobs(jobs, source_name):
 
     # Track seen (title, company) in this batch to prevent intra-batch dupes
     seen_batch = set()
+    skipped_location = 0
 
     for job in jobs:
+        # Filter: only Canada/USA jobs
+        if not is_north_america(job.location):
+            skipped_location += 1
+            continue
+
         # Deduplicate by title and company
         sig = (job.title.lower().strip(), job.company.lower().strip())
         if sig in seen_batch:
@@ -100,6 +184,9 @@ def insert_jobs(jobs, source_name):
             row["tags"] = job.tags
 
         batch_data.append(row)
+
+    if skipped_location > 0:
+        print(f"  [FILTER] Skipped {skipped_location} non-Canada/USA jobs")
 
     if not batch_data:
         return 0

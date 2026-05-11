@@ -18,6 +18,9 @@ CATEGORIES = [
     "IT",
     "Design and UX",
     "Data and Analytics",
+    "Project Management",
+    "Product",
+    "Science and Engineering",
 ]
 
 
@@ -27,7 +30,7 @@ def scrape_themuse_jobs() -> List[JobCreate]:
     seen_urls = set()
 
     for category in CATEGORIES:
-        for page in range(0, 5):  # Up to 5 pages per category
+        for page in range(0, 20):  # Up to 20 pages per category
             url = "https://www.themuse.com/api/public/jobs"
             params = {
                 "category": category,

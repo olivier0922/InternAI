@@ -20,15 +20,32 @@ def _first(selectors):
         return None
 
 SEARCH_QUERIES = [
-    # General queries
+    # ── Montreal General ──
     ("software engineer", "Montreal, QC", "ca.indeed.com"),
     ("developer", "Montreal, QC", "ca.indeed.com"),
     ("data scientist", "Montreal, QC", "ca.indeed.com"),
     ("devops engineer", "Montreal, QC", "ca.indeed.com"),
     ("full stack developer", "Montreal, QC", "ca.indeed.com"),
     ("machine learning", "Montreal, QC", "ca.indeed.com"),
-    
-    # Expanded Montreal Intern Queries
+    ("frontend developer", "Montreal, QC", "ca.indeed.com"),
+    ("backend developer", "Montreal, QC", "ca.indeed.com"),
+    ("python developer", "Montreal, QC", "ca.indeed.com"),
+    ("java developer", "Montreal, QC", "ca.indeed.com"),
+    ("react developer", "Montreal, QC", "ca.indeed.com"),
+    ("cloud engineer", "Montreal, QC", "ca.indeed.com"),
+    ("QA engineer", "Montreal, QC", "ca.indeed.com"),
+    ("data engineer", "Montreal, QC", "ca.indeed.com"),
+    ("security engineer", "Montreal, QC", "ca.indeed.com"),
+    ("systems engineer", "Montreal, QC", "ca.indeed.com"),
+    ("web developer", "Montreal, QC", "ca.indeed.com"),
+    ("mobile developer", "Montreal, QC", "ca.indeed.com"),
+    ("AI engineer", "Montreal, QC", "ca.indeed.com"),
+    ("site reliability engineer", "Montreal, QC", "ca.indeed.com"),
+    ("product manager", "Montreal, QC", "ca.indeed.com"),
+    ("UX designer", "Montreal, QC", "ca.indeed.com"),
+    ("tech lead", "Montreal, QC", "ca.indeed.com"),
+
+    # ── Montreal Intern Queries ──
     ("intern", "Montreal, QC", "ca.indeed.com"),
     ("stage", "Montreal, QC", "ca.indeed.com"),
     ("stagiaire", "Montreal, QC", "ca.indeed.com"),
@@ -40,30 +57,101 @@ SEARCH_QUERIES = [
     ("stagiaire informatique", "Montreal, QC", "ca.indeed.com"),
     ("frontend intern", "Montreal, QC", "ca.indeed.com"),
     ("backend intern", "Montreal, QC", "ca.indeed.com"),
-    
-    # Other Locations
+    ("développeur", "Montreal, QC", "ca.indeed.com"),
+    ("ingénieur logiciel", "Montreal, QC", "ca.indeed.com"),
+
+    # ── Toronto ──
     ("software engineer", "Toronto, ON", "ca.indeed.com"),
     ("developer", "Toronto, ON", "ca.indeed.com"),
     ("python developer", "Toronto, ON", "ca.indeed.com"),
     ("software intern", "Toronto, ON", "ca.indeed.com"),
+    ("full stack developer", "Toronto, ON", "ca.indeed.com"),
+    ("data scientist", "Toronto, ON", "ca.indeed.com"),
+    ("devops", "Toronto, ON", "ca.indeed.com"),
+    ("frontend developer", "Toronto, ON", "ca.indeed.com"),
+    ("backend developer", "Toronto, ON", "ca.indeed.com"),
+    ("java developer", "Toronto, ON", "ca.indeed.com"),
+    ("cloud engineer", "Toronto, ON", "ca.indeed.com"),
+    ("machine learning", "Toronto, ON", "ca.indeed.com"),
+    ("QA engineer", "Toronto, ON", "ca.indeed.com"),
+    ("intern", "Toronto, ON", "ca.indeed.com"),
+    ("co-op", "Toronto, ON", "ca.indeed.com"),
+
+    # ── Vancouver ──
+    ("software engineer", "Vancouver, BC", "ca.indeed.com"),
+    ("developer", "Vancouver, BC", "ca.indeed.com"),
+    ("software intern", "Vancouver, BC", "ca.indeed.com"),
+    ("data scientist", "Vancouver, BC", "ca.indeed.com"),
+    ("full stack developer", "Vancouver, BC", "ca.indeed.com"),
+    ("devops", "Vancouver, BC", "ca.indeed.com"),
+
+    # ── Ottawa ──
+    ("software engineer", "Ottawa, ON", "ca.indeed.com"),
+    ("developer", "Ottawa, ON", "ca.indeed.com"),
+    ("software intern", "Ottawa, ON", "ca.indeed.com"),
+    ("data scientist", "Ottawa, ON", "ca.indeed.com"),
+
+    # ── Canada-wide & Remote ──
     ("react developer", "Canada", "ca.indeed.com"),
     ("backend developer", "Canada", "ca.indeed.com"),
     ("software intern", "Canada", "ca.indeed.com"),
     ("software engineer", "Remote", "ca.indeed.com"),
-    
-    # Global/US queries
+    ("data engineer", "Canada", "ca.indeed.com"),
+    ("full stack developer", "Canada", "ca.indeed.com"),
+    ("machine learning", "Canada", "ca.indeed.com"),
+    ("devops", "Canada", "ca.indeed.com"),
+    ("cloud engineer", "Canada", "ca.indeed.com"),
+    ("developer", "Canada", "ca.indeed.com"),
+    ("QA", "Canada", "ca.indeed.com"),
+    ("security engineer", "Canada", "ca.indeed.com"),
+    ("intern", "Canada", "ca.indeed.com"),
+    ("co-op", "Canada", "ca.indeed.com"),
+
+    # ── US Major Cities ──
+    ("software engineer", "New York, NY", "www.indeed.com"),
+    ("developer", "New York, NY", "www.indeed.com"),
+    ("software intern", "New York, NY", "www.indeed.com"),
+    ("data scientist", "New York, NY", "www.indeed.com"),
+    ("software engineer", "San Francisco, CA", "www.indeed.com"),
+    ("developer", "San Francisco, CA", "www.indeed.com"),
+    ("software intern", "San Francisco, CA", "www.indeed.com"),
+    ("software engineer", "Seattle, WA", "www.indeed.com"),
+    ("developer", "Seattle, WA", "www.indeed.com"),
+    ("software intern", "Seattle, WA", "www.indeed.com"),
+    ("software engineer", "Austin, TX", "www.indeed.com"),
+    ("developer", "Austin, TX", "www.indeed.com"),
+    ("software engineer", "Chicago, IL", "www.indeed.com"),
+    ("software engineer", "Boston, MA", "www.indeed.com"),
+    ("software engineer", "Los Angeles, CA", "www.indeed.com"),
+    ("software engineer", "Denver, CO", "www.indeed.com"),
+    ("data scientist", "Remote", "www.indeed.com"),
+
+    # ── US General ──
     ("software engineer", "", "www.indeed.com"),
     ("python developer", "", "www.indeed.com"),
     ("react developer", "Remote", "www.indeed.com"),
+    ("full stack developer", "", "www.indeed.com"),
+    ("machine learning engineer", "", "www.indeed.com"),
+    ("data engineer", "", "www.indeed.com"),
+    ("devops engineer", "", "www.indeed.com"),
+    ("frontend developer", "Remote", "www.indeed.com"),
+    ("backend developer", "Remote", "www.indeed.com"),
+    ("software intern", "", "www.indeed.com"),
+    ("java developer", "", "www.indeed.com"),
+    ("cloud engineer", "", "www.indeed.com"),
+    ("security engineer", "", "www.indeed.com"),
+    ("QA engineer", "", "www.indeed.com"),
+    ("mobile developer", "", "www.indeed.com"),
+    ("AI engineer", "", "www.indeed.com"),
 ]
 
 def scrape_indeed_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
     """Scrape Indeed public job listings using Scrapling's StealthyFetcher."""
     queries = list(SEARCH_QUERIES)
     if dynamic_skills:
-        for skill in dynamic_skills[:10]:
+        for skill in dynamic_skills[:3]:
             queries.insert(0, (f"{skill} developer", "Montreal, QC", "ca.indeed.com"))
-            queries.insert(0, (f"{skill} engineer", "Remote", "ca.indeed.com"))
+            queries.insert(0, (f"{skill} engineer", "Canada", "ca.indeed.com"))
     try:
         from scrapling.fetchers import StealthyFetcher
     except ImportError:
@@ -83,7 +171,7 @@ def scrape_indeed_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
                     time.sleep(3)
                 q = keywords.replace(' ', '+')
                 l = location.replace(' ', '+').replace(',', '%2C')
-                url = f"https://{domain}/jobs?q={q}&l={l}&fromage=7&sort=date&start={start_idx}"
+                url = f"https://{domain}/jobs?q={q}&l={l}&sort=date&start={start_idx}"
                 print(f"  [Indeed] Searching: '{keywords}' in '{location}' (start={start_idx})...")
 
                 page = StealthyFetcher.fetch(url, headless=True, network_idle=True)

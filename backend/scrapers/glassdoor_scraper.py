@@ -54,7 +54,7 @@ def scrape_glassdoor_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
     """Scrape Glassdoor public job listings using Scrapling's StealthyFetcher."""
     queries = list(SEARCH_QUERIES)
     if dynamic_skills:
-        for skill in dynamic_skills[:10]:
+        for skill in dynamic_skills[:3]:
             queries.insert(0, (f"{skill} developer", "Montreal"))
             queries.insert(0, (f"{skill} engineer", "Toronto"))
     try:

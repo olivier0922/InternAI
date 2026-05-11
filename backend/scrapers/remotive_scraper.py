@@ -16,7 +16,7 @@ def scrape_remotive_jobs() -> List[JobCreate]:
     jobs: List[JobCreate] = []
     
     url = "https://remotive.com/api/remote-jobs"
-    params = {"category": "software-dev", "limit": 250}
+    params = {"category": "software-dev", "limit": 500}
     
     try:
         resp = httpx.get(url, params=params, timeout=30)
