@@ -18,14 +18,33 @@ def _first(selectors):
         return None
 
 SEARCH_QUERIES = [
+    # General queries
     ("software engineer", "Montreal"),
     ("developer", "Montreal"),
-    ("software intern", "Montreal"),
     ("devops", "Montreal"),
+    
+    # Expanded Montreal Intern Queries
+    ("intern", "Montreal"),
+    ("stage", "Montreal"),
+    ("stagiaire", "Montreal"),
+    ("co-op", "Montreal"),
+    ("summer intern", "Montreal"),
+    ("software intern", "Montreal"),
+    ("software engineering intern", "Montreal"),
+    ("data intern", "Montreal"),
+    ("stagiaire informatique", "Montreal"),
+    ("frontend intern", "Montreal"),
+    ("backend intern", "Montreal"),
+
+    # Other Locations
     ("software engineer", "Toronto"),
     ("python developer", "Toronto"),
+    ("software intern", "Toronto"),
     ("software engineer", "Canada"),
     ("full stack developer", "Canada"),
+    ("software intern", "Canada"),
+    
+    # Global queries
     ("react developer", ""),
     ("machine learning engineer", ""),
 ]

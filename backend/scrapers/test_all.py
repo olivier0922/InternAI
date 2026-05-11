@@ -6,7 +6,7 @@ def test_indeed():
     from indeed_scraper import scrape_indeed_jobs, SEARCH_QUERIES
     print("\nTesting Indeed Scraper...")
     SEARCH_QUERIES.clear()
-    SEARCH_QUERIES.append(("react", "Montreal", "ca.indeed.com"))
+    SEARCH_QUERIES.append(("software intern", "Montreal, QC", "ca.indeed.com"))
     jobs = scrape_indeed_jobs()
     print(f"Indeed found {len(jobs)} jobs")
     for j in jobs[:5]:

@@ -20,20 +20,38 @@ def _first(selectors):
         return None
 
 SEARCH_QUERIES = [
+    # General queries
     ("software engineer", "Montreal, QC", "ca.indeed.com"),
     ("developer", "Montreal, QC", "ca.indeed.com"),
-    ("software intern", "Montreal, QC", "ca.indeed.com"),
     ("data scientist", "Montreal, QC", "ca.indeed.com"),
     ("devops engineer", "Montreal, QC", "ca.indeed.com"),
     ("full stack developer", "Montreal, QC", "ca.indeed.com"),
     ("machine learning", "Montreal, QC", "ca.indeed.com"),
+    
+    # Expanded Montreal Intern Queries
+    ("intern", "Montreal, QC", "ca.indeed.com"),
+    ("stage", "Montreal, QC", "ca.indeed.com"),
+    ("stagiaire", "Montreal, QC", "ca.indeed.com"),
+    ("co-op", "Montreal, QC", "ca.indeed.com"),
+    ("summer intern", "Montreal, QC", "ca.indeed.com"),
+    ("software intern", "Montreal, QC", "ca.indeed.com"),
+    ("software engineering intern", "Montreal, QC", "ca.indeed.com"),
+    ("data intern", "Montreal, QC", "ca.indeed.com"),
+    ("stagiaire informatique", "Montreal, QC", "ca.indeed.com"),
+    ("frontend intern", "Montreal, QC", "ca.indeed.com"),
+    ("backend intern", "Montreal, QC", "ca.indeed.com"),
+    
+    # Other Locations
     ("software engineer", "Toronto, ON", "ca.indeed.com"),
     ("developer", "Toronto, ON", "ca.indeed.com"),
     ("python developer", "Toronto, ON", "ca.indeed.com"),
+    ("software intern", "Toronto, ON", "ca.indeed.com"),
     ("react developer", "Canada", "ca.indeed.com"),
     ("backend developer", "Canada", "ca.indeed.com"),
     ("software intern", "Canada", "ca.indeed.com"),
     ("software engineer", "Remote", "ca.indeed.com"),
+    
+    # Global/US queries
     ("software engineer", "", "www.indeed.com"),
     ("python developer", "", "www.indeed.com"),
     ("react developer", "Remote", "www.indeed.com"),

@@ -22,19 +22,37 @@ def _first(selectors):
 
 # Search queries to run
 SEARCH_QUERIES = [
+    # General queries
     ("software engineer", "Montreal, QC"),
     ("developer", "Montreal, QC"),
-    ("intern software", "Montreal, QC"),
     ("data scientist", "Montreal, QC"),
     ("devops", "Montreal, QC"),
     ("machine learning", "Montreal, QC"),
+
+    # Expanded Montreal Intern Queries
+    ("intern", "Montreal, QC"),
+    ("stage", "Montreal, QC"),
+    ("stagiaire", "Montreal, QC"),
+    ("co-op", "Montreal, QC"),
+    ("summer intern", "Montreal, QC"),
+    ("software intern", "Montreal, QC"),
+    ("software engineering intern", "Montreal, QC"),
+    ("data intern", "Montreal, QC"),
+    ("stagiaire informatique", "Montreal, QC"),
+    ("frontend intern", "Montreal, QC"),
+    ("backend intern", "Montreal, QC"),
+
+    # Other Locations
     ("software engineer", "Toronto, ON"),
     ("developer", "Toronto, ON"),
+    ("software intern", "Toronto, ON"),
     ("software engineer", "Canada"),
     ("python developer", "Canada"),
     ("react developer", "Canada"),
     ("full stack developer", "Canada"),
     ("intern software", "Canada"),
+    
+    # Global/Remote queries
     ("software engineer intern", ""),
     ("frontend developer", "Remote"),
     ("backend developer", "Remote"),
