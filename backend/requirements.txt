@@ -1,0 +1,12 @@
+fastapi[standard]
+pydantic
+pydantic-settings
+supabase
+groq
+instructor
+pymupdf
+python-docx
+pytest
+httpx
+python-dotenv
+scrapling[fetchers]

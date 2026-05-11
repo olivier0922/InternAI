@@ -1,0 +1,27 @@
+# Python / Backend
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+*.pyc
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Environments
+.env
+.env.local
+backend/.env
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+backend/scrapers/.geocache.json
+indeed_dom.html
+card_html.txt
+scraper_out.txt
+scraper_err.txt
+test_resume.pdf
