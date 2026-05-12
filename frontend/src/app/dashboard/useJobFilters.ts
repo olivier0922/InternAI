@@ -133,11 +133,14 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
       })
     }
 
-    // 7. Intelligent Scoring Engine ("What" search)
-    if (filters.searchQuery.trim() !== '') {
-      const query = filters.searchQuery.toLowerCase().trim()
-      // Tokenize the search query
-      const terms = query.split(/\s+/).filter(t => t.length > 0)
+    // 7. Intelligent Scoring Engine ("What" search + Resume Skills)
+    const query = filters.searchQuery.toLowerCase().trim()
+    const hasSearchQuery = query !== ''
+    const hasSkills = userSkills && userSkills.length > 0
+
+    if (hasSearchQuery || hasSkills) {
+      const terms = hasSearchQuery ? query.split(/\s+/).filter(t => t.length > 0) : []
+      const skillTerms = hasSkills ? userSkills.map(s => s.toLowerCase().trim()) : []
       
       results.forEach(job => {
         let textScore = 0
@@ -149,36 +152,61 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
         const titleWords = titleLower.split(/\s+/)
         const companyWords = companyLower.split(/\s+/)
 
-        // Exact full-query match in title = massive boost
-        if (titleLower.includes(query)) textScore += 50
-        // Exact full-query match in company
-        if (companyLower.includes(query)) textScore += 30
+        // Search Query Scoring
+        if (hasSearchQuery) {
+          // Exact full-query match in title = massive boost
+          if (titleLower.includes(query)) textScore += 50
+          // Exact full-query match in company
+          if (companyLower.includes(query)) textScore += 30
 
-        terms.forEach(term => {
-          // Title exact word match
-          if (titleWords.includes(term)) textScore += 15
-          // Title substring match
-          else if (titleLower.includes(term)) textScore += 10
-          // Title fuzzy match
-          else if (fuzzyMatch(term, titleWords)) textScore += 5
+          terms.forEach(term => {
+            // Title exact word match
+            if (titleWords.includes(term)) textScore += 15
+            // Title substring match
+            else if (titleLower.includes(term)) textScore += 10
+            // Title fuzzy match
+            else if (fuzzyMatch(term, titleWords)) textScore += 5
+            
+            // Company exact match
+            if (companyWords.includes(term)) textScore += 8
+            else if (companyLower.includes(term)) textScore += 5
+            
+            // Tag match
+            if (tagsLower.some(t => t.includes(term))) textScore += 4
+            
+            // Location match
+            if (locationLower.includes(term)) textScore += 3
+            
+            // Description match
+            if (descLower.includes(term)) textScore += 2
+          })
+        }
+
+        // Resume Skills Scoring
+        if (hasSkills) {
+          let matchedSkills = 0
+          skillTerms.forEach(skill => {
+            if (titleLower.includes(skill)) {
+              textScore += 20 // Huge boost if skill is in title
+              matchedSkills++
+            } else if (tagsLower.some(t => t === skill || t.includes(skill))) {
+              textScore += 10 // Big boost for explicit tags
+              matchedSkills++
+            } else if (descLower.includes(skill)) {
+              textScore += 5  // Moderate boost if mentioned in description
+              matchedSkills++
+            }
+          })
           
-          // Company exact match
-          if (companyWords.includes(term)) textScore += 8
-          else if (companyLower.includes(term)) textScore += 5
-          
-          // Tag match
-          if (tagsLower.some(t => t.includes(term))) textScore += 4
-          
-          // Location match
-          if (locationLower.includes(term)) textScore += 3
-          
-          // Description match (limited to avoid keyword stuffing)
-          if (descLower.includes(term)) textScore += 2
-        })
+          // Synergy bonus: if multiple resume skills match, exponentially boost
+          if (matchedSkills >= 2) {
+            textScore += (matchedSkills * 5)
+          }
+        }
         
-        // Only add bonuses if there's at least one text match
+        // Only add bonuses if there's at least some text or skill match, or if neither was provided
         let score = textScore
-        if (textScore > 0) {
+        if (textScore > 0 || (!hasSearchQuery && !hasSkills)) {
           // Date decay: newer jobs get a slight boost (up to 5 points)
           const ageMs = Date.now() - new Date(job.created_at).getTime()
           const ageDays = ageMs / (1000 * 60 * 60 * 24)
@@ -190,8 +218,10 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
         job.relevanceScore = score
       })
 
-      // Drop jobs with no text match at all
-      results = results.filter(job => job.relevanceScore >= 2)
+      // Drop jobs with no match if searching (but if only skills, maybe keep them just sorted lower?)
+      if (hasSearchQuery) {
+        results = results.filter(job => job.relevanceScore >= 2)
+      }
       
       // Sort by score descending, then by newest
       results.sort((a, b) => {
@@ -201,7 +231,7 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       })
     } else {
-      // No search query: sort by newest or keep current order
+      // No search query and no skills: sort by newest
       if (filters.sortBy === 'date' || !filters.searchQuery) {
         results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       }

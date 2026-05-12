@@ -61,6 +61,17 @@ SEARCH_QUERIES = [
     ("software intern", "Quebec City, QC"),
     ("software intern", "Kitchener, ON"),
     ("software intern", "Waterloo, ON"),
+    ("software intern", "Mississauga, ON"),
+    ("software intern", "Markham, ON"),
+    ("software intern", "Burnaby, BC"),
+    ("software intern", "Richmond, BC"),
+    ("software intern", "Victoria, BC"),
+    ("software intern", "Sherbrooke, QC"),
+    ("software intern", "Laval, QC"),
+    ("intern", "Mississauga, ON"),
+    ("intern", "Markham, ON"),
+    ("intern", "Burnaby, BC"),
+    ("intern", "Victoria, BC"),
 
     # ── Canada-wide & Remote ──
     ("software intern", "Canada"),

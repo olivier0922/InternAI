@@ -65,6 +65,17 @@ SEARCH_QUERIES = [
     ("software intern", "Quebec City, QC", "ca.indeed.com"),
     ("software intern", "Kitchener, ON", "ca.indeed.com"),
     ("software intern", "Waterloo, ON", "ca.indeed.com"),
+    ("software intern", "Mississauga, ON", "ca.indeed.com"),
+    ("software intern", "Markham, ON", "ca.indeed.com"),
+    ("software intern", "Burnaby, BC", "ca.indeed.com"),
+    ("software intern", "Richmond, BC", "ca.indeed.com"),
+    ("software intern", "Victoria, BC", "ca.indeed.com"),
+    ("software intern", "Sherbrooke, QC", "ca.indeed.com"),
+    ("software intern", "Laval, QC", "ca.indeed.com"),
+    ("stage", "Sherbrooke, QC", "ca.indeed.com"),
+    ("stage", "Laval, QC", "ca.indeed.com"),
+    ("intern", "Mississauga, ON", "ca.indeed.com"),
+    ("intern", "Markham, ON", "ca.indeed.com"),
 
 
 ]
