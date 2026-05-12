@@ -4,6 +4,7 @@ Fetches real software engineering jobs from the free FindWork API.
 No API key required for basic access.
 """
 import httpx
+import os
 from typing import List
 import re
 import sys
@@ -17,12 +18,20 @@ def scrape_findwork_jobs() -> List[JobCreate]:
     jobs: List[JobCreate] = []
     
     url = "https://findwork.dev/api/jobs/"
+    api_key = os.getenv("FINDWORK_API_KEY", "").strip()
     
     try:
-        resp = httpx.get(url, timeout=30, headers={
+        headers = {
             "Accept": "application/json",
             "User-Agent": "InternAI-JobBot/1.0"
-        })
+        }
+        if api_key:
+            headers["Authorization"] = f"Token {api_key}"
+
+        resp = httpx.get(url, timeout=30, headers=headers)
+        if resp.status_code == 401:
+            print("[FindWork] Missing/invalid API key (set FINDWORK_API_KEY).")
+            return jobs
         resp.raise_for_status()
         data = resp.json()
     except Exception as e:

@@ -2,6 +2,7 @@
 Glassdoor Jobs Scraper (via Scrapling StealthyFetcher)
 Scrapes Glassdoor's public job search pages.
 """
+import os
 import time
 import sys
 from pathlib import Path
@@ -18,11 +19,6 @@ def _first(selectors):
         return None
 
 SEARCH_QUERIES = [
-    # General queries
-    ("software engineer", "Montreal"),
-    ("developer", "Montreal"),
-    ("devops", "Montreal"),
-    
     # Expanded Montreal Intern Queries
     ("intern", "Montreal"),
     ("stage", "Montreal"),
@@ -37,24 +33,40 @@ SEARCH_QUERIES = [
     ("backend intern", "Montreal"),
 
     # Other Locations
-    ("software engineer", "Toronto"),
-    ("python developer", "Toronto"),
     ("software intern", "Toronto"),
-    ("software engineer", "Canada"),
-    ("full stack developer", "Canada"),
+    ("intern", "Toronto"),
+    ("co-op", "Toronto"),
+    ("software intern", "Vancouver"),
+    ("software intern", "Calgary"),
+    ("software intern", "Edmonton"),
+    ("software intern", "Winnipeg"),
+    ("software intern", "Halifax"),
+    ("software intern", "Quebec City"),
+    ("software intern", "Kitchener"),
+    ("software intern", "Waterloo"),
+
+    # Canada-wide
     ("software intern", "Canada"),
-    
-    # Global queries
-    ("react developer", ""),
-    ("machine learning engineer", ""),
+    ("internship", "Canada"),
+    ("co-op", "Canada"),
+    ("data intern", "Canada"),
+    ("student", "Canada"),
 ]
+
+GLASSDOOR_MAX_PAGES = int(os.getenv("GLASSDOOR_MAX_PAGES", "10"))
+GLASSDOOR_FROM_AGE = int(os.getenv("GLASSDOOR_FROM_AGE", "30"))
+GLASSDOOR_PAGE_DELAY = float(os.getenv("GLASSDOOR_PAGE_DELAY", "1.0"))
+GLASSDOOR_QUERY_DELAY = float(os.getenv("GLASSDOOR_QUERY_DELAY", "0.5"))
+GLASSDOOR_SKILL_LIMIT = int(os.getenv("GLASSDOOR_SKILL_LIMIT", "8"))
+GLASSDOOR_BLOCK_LIMIT = int(os.getenv("GLASSDOOR_BLOCK_LIMIT", "5"))
+GLASSDOOR_EMPTY_LIMIT = int(os.getenv("GLASSDOOR_EMPTY_LIMIT", "2"))
 
 
 def scrape_glassdoor_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
     """Scrape Glassdoor public job listings using Scrapling's StealthyFetcher."""
     queries = list(SEARCH_QUERIES)
     if dynamic_skills:
-        for skill in dynamic_skills[:3]:
+        for skill in dynamic_skills[:GLASSDOOR_SKILL_LIMIT]:
             queries.insert(0, (f"{skill} developer", "Montreal"))
             queries.insert(0, (f"{skill} engineer", "Toronto"))
     try:
@@ -65,23 +77,31 @@ def scrape_glassdoor_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
 
     jobs: List[JobCreate] = []
     seen_urls = set()
+    blocked_count = 0
 
     for keywords, location in queries:
-        for page_num in range(1, 6):
+        empty_pages = 0
+        for page_num in range(1, GLASSDOOR_MAX_PAGES + 1):
             try:
                 if page_num > 1:
-                    time.sleep(3.5)
+                    time.sleep(GLASSDOOR_PAGE_DELAY)
                 kw = keywords.replace(' ', '-')
                 loc_param = f"&locKeyword={location.replace(' ', '+')}" if location else ""
                 ip_param = f"_IP{page_num}" if page_num > 1 else ""
-                url = f"https://www.glassdoor.com/Job/{kw}-jobs-SRCH_KO0,{len(kw)}{ip_param}.htm?fromAge=7{loc_param}"
+                url = f"https://www.glassdoor.com/Job/{kw}-jobs-SRCH_KO0,{len(kw)}{ip_param}.htm?fromAge={GLASSDOOR_FROM_AGE}{loc_param}"
                 print(f"  [Glassdoor] Searching: '{keywords}' in '{location}' (page {page_num})...")
 
                 page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
 
                 if page.status != 200:
                     print(f"  [Glassdoor] Got status {page.status}")
+                    if page.status in (403, 429, 999):
+                        blocked_count += 1
+                        if blocked_count >= GLASSDOOR_BLOCK_LIMIT:
+                            print("  [Glassdoor] Too many blocks, stopping early.")
+                            return jobs
                     continue
+                blocked_count = 0
 
                 # Glassdoor cards: data-test="jobListing"
                 job_cards = page.css('[data-test="jobListing"]')
@@ -91,6 +111,12 @@ def scrape_glassdoor_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
                     job_cards = page.css('.react-job-listing')
 
                 print(f"  [Glassdoor] Found {len(job_cards)} cards")
+                if len(job_cards) == 0:
+                    empty_pages += 1
+                    if empty_pages >= GLASSDOOR_EMPTY_LIMIT:
+                        break
+                    continue
+                empty_pages = 0
 
                 for card in job_cards:
                     try:
@@ -178,10 +204,10 @@ def scrape_glassdoor_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
                     except Exception:
                         continue
 
-                time.sleep(3)
+                time.sleep(GLASSDOOR_QUERY_DELAY)
             except Exception as e:
                 print(f"  [Glassdoor] Error for '{keywords}' in '{location}': {e}")
-                time.sleep(3)
+                time.sleep(GLASSDOOR_QUERY_DELAY)
 
     return jobs
 

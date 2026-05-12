@@ -12,7 +12,6 @@ interface Props {
 }
 
 const POPULAR_SEARCHES = ['Software Engineer', 'Frontend', 'Backend', 'Full Stack', 'Machine Learning', 'Data Scientist', 'DevOps', 'Cybersecurity', 'Intern', 'New Grad']
-const JOB_TYPES = ['All', 'Full-time', 'Internship', 'New Grad', 'Contract']
 const DATE_OPTIONS = [
   { value: 'all', label: 'Any time' },
   { value: '24h', label: '24h' },
@@ -34,7 +33,7 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
     return () => clearTimeout(timeout)
   }, [localWhat, localWhere, setFilters])
 
-  const hasActiveFilters = filters.remoteOnly || filters.jobType !== 'All' || filters.datePosted !== 'all' || filters.sources.length > 0 || localWhat || localWhere
+  const hasActiveFilters = filters.remoteOnly || filters.datePosted !== 'all' || filters.sources.length > 0 || localWhat || localWhere
 
   const clearAllFilters = () => {
     setLocalWhat('')
@@ -87,27 +86,6 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
 
       {/* Filter Bar */}
       <div className="flex items-center gap-4 px-2 flex-wrap">
-        {/* Job Type Chips */}
-        <div className="flex items-center gap-1.5">
-          <div className="w-6 h-6 rounded-md bg-white/[0.04] flex items-center justify-center border border-white/[0.08] mr-1">
-            <Briefcase className="w-3.5 h-3.5 text-primary/80" />
-          </div>
-          {JOB_TYPES.map(type => (
-            <button key={type} onClick={() => setFilters(f => ({ ...f, jobType: type }))}
-              className={`text-[12px] font-medium px-3 py-1.5 rounded-lg transition-all duration-200 ${
-                filters.jobType === type
-                  ? 'bg-primary/20 text-primary border border-primary/40 shadow-[0_0_10px_rgba(99,102,241,0.2)]'
-                  : 'bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-white/[0.05]'
-              }`}>
-              {type}
-            </button>
-          ))}
-        </div>
-
-        <div className="w-px h-6 bg-white/[0.1]" />
-
-
-
         {/* Date Filter Chips */}
         <div className="flex items-center gap-1.5">
           <div className="w-6 h-6 rounded-md bg-white/[0.04] flex items-center justify-center border border-white/[0.08] mr-1">

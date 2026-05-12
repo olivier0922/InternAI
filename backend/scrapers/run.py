@@ -6,6 +6,7 @@ Handles deduplication by URL.
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -62,8 +63,8 @@ def clean_url(url: str) -> str:
     except:
         return url
 
-def is_north_america(location: str) -> bool:
-    """Return True if location appears to be in Canada, USA, or is Remote/unspecified."""
+def is_canada(location: str) -> bool:
+    """Return True if location appears to be in Canada, or is Remote/unspecified."""
     if not location:
         return True  # Unknown location — keep it
     loc = location.lower().strip()
@@ -86,58 +87,7 @@ def is_north_america(location: str) -> bool:
     if any(kw in loc for kw in ca_provinces):
         return True
 
-    # US indicators
-    us_states = [
-        "united states", "usa", ", us",
-        "new york", "san francisco", "los angeles", "chicago", "seattle",
-        "austin", "boston", "denver", "dallas", "houston", "atlanta",
-        "phoenix", "san diego", "san jose", "portland", "miami",
-        "philadelphia", "minneapolis", "detroit", "charlotte",
-        "nashville", "raleigh", "pittsburgh", "columbus", "indianapolis",
-        "salt lake", "washington", "d.c.", "dc",
-        ", ny", ", ca", ", tx", ", wa", ", il", ", ma", ", co", ", ga",
-        ", fl", ", pa", ", nc", ", oh", ", mn", ", mi", ", az", ", or",
-        ", va", ", md", ", ct", ", nj", ", ut", ", tn", ", mo", ", wi",
-        ", in", ", sc", ", ky", ", la", ", ok", ", ia", ", ar", ", ks",
-        ", nv", ", nm", ", ne", ", wv", ", id", ", hi", ", me", ", nh",
-        ", ri", ", mt", ", de", ", sd", ", nd", ", ak", ", vt", ", wy",
-        "california", "texas", "florida", "illinois", "pennsylvania",
-        "ohio", "georgia", "north carolina", "michigan", "new jersey",
-        "virginia", "massachusetts", "arizona", "colorado", "tennessee",
-        "indiana", "maryland", "minnesota", "missouri", "wisconsin",
-        "oregon", "connecticut", "iowa", "arkansas", "kansas", "nevada",
-        "utah", "kentucky", "louisiana",
-    ]
-    if any(kw in loc for kw in us_states):
-        return True
-
-    # Reject known non-NA countries
-    non_na = [
-        "germany", "deutschland", "uk", "united kingdom", "london, uk",
-        "france", "paris", "india", "bangalore", "mumbai", "delhi",
-        "australia", "sydney", "melbourne", "brazil", "são paulo",
-        "netherlands", "amsterdam", "spain", "madrid", "barcelona",
-        "italy", "milan", "rome", "japan", "tokyo", "china", "beijing",
-        "shanghai", "singapore", "ireland", "dublin", "portugal", "lisbon",
-        "sweden", "stockholm", "norway", "oslo", "denmark", "copenhagen",
-        "finland", "helsinki", "poland", "warsaw", "czech", "prague",
-        "austria", "vienna", "switzerland", "zurich", "belgium", "brussels",
-        "south korea", "seoul", "taiwan", "israel", "tel aviv",
-        "south africa", "nigeria", "kenya", "argentina", "buenos aires",
-        "colombia", "bogota", "chile", "santiago", "mexico", "emea",
-        "apac", "latam", "europe", "asia", "africa", "middle east",
-        "philippines", "manila", "vietnam", "thailand", "bangkok",
-        "indonesia", "jakarta", "malaysia", "kuala lumpur", "pakistan",
-        "egypt", "cairo", "turkey", "istanbul", "romania", "bucharest",
-        "ukraine", "kyiv", "hungary", "budapest", "croatia", "serbia",
-        "greece", "athens", "bulgaria", "sofia", "estonia", "tallinn",
-        "latvia", "riga", "lithuania", "vilnius", "luxembourg",
-    ]
-    if any(kw in loc for kw in non_na):
-        return False
-
-    # If we can't determine, keep it (benefit of the doubt)
-    return True
+    return False
 
 
 def insert_jobs(jobs, source_name):
@@ -150,23 +100,26 @@ def insert_jobs(jobs, source_name):
     
     has_cols = check_new_columns()
 
-    # Track seen (title, company) in this batch to prevent intra-batch dupes
-    seen_batch = set()
+    # Track seen URLs in this batch to prevent intra-batch dupes
+    seen_urls = set()
     skipped_location = 0
 
     for job in jobs:
-        # Filter: only Canada/USA jobs
-        if not is_north_america(job.location):
+        # Filter: only Internships
+        if job.job_type != "Internship":
+            continue
+
+        # Filter: only Canada jobs
+        if not is_canada(job.location):
             skipped_location += 1
             continue
 
-        # Deduplicate by title and company
-        sig = (job.title.lower().strip(), job.company.lower().strip())
-        if sig in seen_batch:
+        if not job.url:
             continue
-        seen_batch.add(sig)
-
         cleaned_url = clean_url(job.url)
+        if cleaned_url in seen_urls:
+            continue
+        seen_urls.add(cleaned_url)
         
         row = {
             "title": job.title,
@@ -186,7 +139,7 @@ def insert_jobs(jobs, source_name):
         batch_data.append(row)
 
     if skipped_location > 0:
-        print(f"  [FILTER] Skipped {skipped_location} non-Canada/USA jobs")
+        print(f"  [FILTER] Skipped {skipped_location} non-Canada jobs")
 
     if not batch_data:
         return 0
@@ -211,6 +164,28 @@ def run_scraper_safe(name, func):
         return name, [], elapsed, str(e)
 
 
+def run_scraper_group(scrapers, max_workers: int):
+    if max_workers <= 1 or len(scrapers) <= 1:
+        return [run_scraper_safe(name, func) for name, func in scrapers]
+
+    order = {name: i for i, (name, _) in enumerate(scrapers)}
+    results = []
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(run_scraper_safe, name, func): name
+            for name, func in scrapers
+        }
+        for future in as_completed(futures):
+            try:
+                results.append(future.result())
+            except Exception as e:
+                name = futures[future]
+                results.append((name, [], 0.0, str(e)))
+
+    results.sort(key=lambda r: order.get(r[0], 0))
+    return results
+
+
 def get_user_skills():
     if not supabase: return []
     skills_set = set()
@@ -223,6 +198,36 @@ def get_user_skills():
     except Exception as e:
         print(f"  [WARN] Failed to fetch user skills: {e}")
     return list(skills_set)
+
+
+def sanitize_keywords(keywords):
+    allowed_digit = ["c++", "c#", "node.js", "next.js", "vue3", "react18", "html5", "css3"]
+    broad_terms = [
+        "software", "developer", "engineer", "intern", "internship", "co-op",
+        "new grad", "junior", "entry", "frontend", "backend", "full stack",
+        "python", "javascript", "typescript", "java", "c++", "c#", "node",
+        "react", "angular", "vue", "sql", "data", "ml", "ai", "devops",
+        "cloud", "security", "qa", "test", "mobile", "ios", "android",
+    ]
+    cleaned = []
+    seen = set()
+    for kw in keywords:
+        k = (kw or "").strip()
+        if len(k) < 3 or len(k) > 32:
+            continue
+        if not any(ch.isalpha() for ch in k):
+            continue
+        lower = k.lower()
+        if not any(term in lower for term in broad_terms):
+            continue
+        if any(ch.isdigit() for ch in k):
+            if not any(p in lower for p in allowed_digit):
+                continue
+        if lower in seen:
+            continue
+        seen.add(lower)
+        cleaned.append(k)
+    return cleaned
 
 from rss_scrapers import scrape_remoteok_jobs, scrape_nodesk_jobs
 
@@ -238,8 +243,23 @@ def run_scrapers():
         return
         
     dynamic_skills = get_user_skills()
+
+    # Force broad search terms to ensure lots of intern/entry roles in Canada
+    base_keywords = [
+        "intern", "internship", "co-op", "student", "new grad",
+        "junior", "entry level", "software intern", "developer intern",
+        "data intern", "qa intern", "montreal intern", "canada intern",
+    ]
+    dynamic_skills = list(dict.fromkeys(dynamic_skills + base_keywords))
+    dynamic_skills = sanitize_keywords(dynamic_skills)
+    dynamic_skill_limit = int(os.getenv("SCRAPER_SKILL_LIMIT", "12"))
+    dynamic_skills = dynamic_skills[:dynamic_skill_limit]
+
+    max_api_workers = int(os.getenv("SCRAPER_API_WORKERS", "6"))
+    max_web_workers = int(os.getenv("SCRAPER_WEB_WORKERS", "2"))
+
     if dynamic_skills:
-        print(f"  Found {len(dynamic_skills)} unique user skills to target: {', '.join(dynamic_skills[:5])}...")
+        print(f"  Using {len(dynamic_skills)} keywords to target: {', '.join(dynamic_skills[:5])}...")
 
     api_scrapers = [
         ("WeWorkRemotely", scrape_weworkremotely_jobs),
@@ -265,9 +285,10 @@ def run_scrapers():
     all_scrapers = api_scrapers + web_scrapers
 
     print(f"\n--- Phase 1: API Scrapers ({len(api_scrapers)} sources) ---")
-    for i, (name, func) in enumerate(api_scrapers, 1):
+    print(f"  API workers: {max_api_workers}")
+    api_results = run_scraper_group(api_scrapers, max_api_workers)
+    for i, (name, jobs, elapsed, error) in enumerate(api_results, 1):
         print(f"\n[{i}/{len(all_scrapers)}] Fetching from {name}...")
-        name, jobs, elapsed, error = run_scraper_safe(name, func)
         if error:
             print(f"  [SKIP] {name} failed ({elapsed:.1f}s): {error}")
             continue
@@ -279,9 +300,10 @@ def run_scrapers():
 
     print(f"\n--- Phase 2: Web Scrapers ({len(web_scrapers)} sources) ---")
     print("  (These use Scrapling StealthyFetcher — takes longer)")
-    for i, (name, func) in enumerate(web_scrapers, len(api_scrapers) + 1):
+    print(f"  Web workers: {max_web_workers}")
+    web_results = run_scraper_group(web_scrapers, max_web_workers)
+    for i, (name, jobs, elapsed, error) in enumerate(web_results, len(api_scrapers) + 1):
         print(f"\n[{i}/{len(all_scrapers)}] Scraping {name}...")
-        name, jobs, elapsed, error = run_scraper_safe(name, func)
         if error:
             print(f"  [SKIP] {name} failed ({elapsed:.1f}s): {error}")
             continue

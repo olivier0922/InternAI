@@ -4,6 +4,7 @@ Fetches real engineering/tech jobs from The Muse's free public API.
 No API key required for <500 requests/hour.
 """
 import httpx
+import os
 import re
 from typing import List
 import sys
@@ -29,8 +30,10 @@ def scrape_themuse_jobs() -> List[JobCreate]:
     jobs: List[JobCreate] = []
     seen_urls = set()
 
+    max_pages = int(os.getenv("MUSE_MAX_PAGES", "40"))
+
     for category in CATEGORIES:
-        for page in range(0, 20):  # Up to 20 pages per category
+        for page in range(0, max_pages):  # Up to max_pages per category
             url = "https://www.themuse.com/api/public/jobs"
             params = {
                 "category": category,

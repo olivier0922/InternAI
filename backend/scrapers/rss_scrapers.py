@@ -68,4 +68,12 @@ def scrape_remoteok_jobs(*args):
     return scrape_rss_feed("https://remoteok.com/rss", "RemoteOK")
 
 def scrape_nodesk_jobs(*args):
-    return scrape_rss_feed("https://nodesk.co/remote-jobs/rss.xml", "NoDesk")
+    urls = [
+        "https://nodesk.co/remote-jobs/rss.xml",
+        "https://nodesk.co/remote-jobs/feed/",
+    ]
+    for url in urls:
+        jobs = scrape_rss_feed(url, "NoDesk")
+        if jobs:
+            return jobs
+    return []

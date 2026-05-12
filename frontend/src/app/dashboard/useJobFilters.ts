@@ -23,7 +23,6 @@ export interface FilterState {
   remoteOnly: boolean
   mapRadiusKm: number
   mapCenter: [number, number] | null
-  jobType: string       // "All", "Internship", "Full-time", "New Grad", "Contract"
   datePosted: string    // "all", "24h", "7d", "30d"
   sources: string[]     // Array of source names to include (empty = all)
   sortBy: string        // "relevance" or "date"
@@ -35,7 +34,6 @@ export const DEFAULT_FILTERS: FilterState = {
   remoteOnly: false,
   mapRadiusKm: 50,
   mapCenter: null,
-  jobType: 'All',
   datePosted: 'all',
   sources: [],
   sortBy: 'relevance',
@@ -107,11 +105,6 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
       )
     }
 
-    // 2. Job Type Filter
-    if (filters.jobType && filters.jobType !== 'All') {
-      results = results.filter(job => job.job_type === filters.jobType)
-    }
-
     // 3. Date Posted Filter
     if (filters.datePosted && filters.datePosted !== 'all') {
       const now = Date.now()
@@ -137,47 +130,6 @@ export function useJobFilters(jobs: Job[], filters: FilterState, userSkills: str
         if (job.latitude == null || job.longitude == null) return false
         const dist = getDistance(filters.mapCenter![0], filters.mapCenter![1], job.latitude, job.longitude)
         return dist <= filters.mapRadiusKm
-      })
-    }
-
-    // 6. Strict CV Matching (Always enforced if user has skills)
-    if (userSkills && userSkills.length > 0) {
-      const userSkillsLower = userSkills.map(s => s.toLowerCase().trim())
-      
-      results = results.filter(job => {
-        const title = job.title.toLowerCase()
-        const desc = job.description.toLowerCase()
-        const tags = (job.tags || []).map(t => t.toLowerCase())
-        const combinedText = `${title} ${desc} ${tags.join(' ')}`
-        
-        let matchCount = 0
-        let titleMatch = false
-
-        for (const skill of userSkillsLower) {
-          const isShort = skill.length <= 2
-          let matchesText = false
-          
-          if (isShort) {
-             const regex = new RegExp(`\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')
-             matchesText = regex.test(combinedText)
-             if (regex.test(title) || tags.some(t => regex.test(t))) titleMatch = true
-          } else {
-             matchesText = combinedText.includes(skill)
-             if (title.includes(skill) || tags.some(t => t.includes(skill))) titleMatch = true
-          }
-          
-          if (matchesText) matchCount++
-        }
-        
-        // Stricter matching: Must have at least 1 skill in the title/tags (Field of Work)
-        // AND must have at least 2 matching skills total (or 20%).
-        const requiredMatches = Math.min(2, Math.ceil(userSkillsLower.length * 0.2))
-        
-        if (titleMatch && matchCount >= requiredMatches) {
-          job.relevanceScore += (matchCount * 10) + 20 // Bonus for title match
-          return true
-        }
-        return false
       })
     }
 

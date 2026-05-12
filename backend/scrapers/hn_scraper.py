@@ -4,6 +4,7 @@ Fetches real job postings from HN using the free Algolia search API.
 No API key or browser required — pure HTTP.
 """
 import httpx
+import os
 import re
 from typing import List
 import sys
@@ -16,8 +17,10 @@ def scrape_hn_jobs() -> List[JobCreate]:
     """Fetch job postings from Hacker News via the Algolia API (no Playwright needed)."""
     jobs: List[JobCreate] = []
 
+    max_pages = int(os.getenv("HN_MAX_PAGES", "10"))
+
     # Algolia HN API — search for recent job stories, paginate
-    for page_num in range(0, 5):
+    for page_num in range(0, max_pages):
         url = "https://hn.algolia.com/api/v1/search_by_date"
         params = {
             "tags": "job",

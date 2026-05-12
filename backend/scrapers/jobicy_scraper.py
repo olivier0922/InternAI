@@ -4,6 +4,7 @@ Fetches remote tech job listings from the free Jobicy API.
 No API key required.
 """
 import httpx
+import os
 import re
 from typing import List
 import sys
@@ -16,20 +17,30 @@ def scrape_jobicy_jobs() -> List[JobCreate]:
     """Fetch remote tech jobs from Jobicy's free public API."""
     jobs: List[JobCreate] = []
 
+    max_pages = int(os.getenv("JOBICY_MAX_PAGES", "20"))
+    page_size = int(os.getenv("JOBICY_PAGE_SIZE", "20"))
+    jobicy_tag = os.getenv("JOBICY_TAG", "engineering").strip()
+
     # Paginate to get more results
-    for page_num in range(1, 11):
+    for page_num in range(1, max_pages + 1):
         url = "https://jobicy.com/api/v2/remote-jobs"
         params = {
-            "count": 50,
+            "count": page_size,
             "page": page_num,
         }
+        if jobicy_tag:
+            params["tag"] = jobicy_tag
 
         try:
             resp = httpx.get(url, params=params, timeout=30, headers={
                 "Accept": "application/json",
                 "User-Agent": "InternAI-JobBot/2.0 (student project)"
             })
-            resp.raise_for_status()
+            if resp.status_code != 200:
+                print(f"[Jobicy] Error fetching jobs (page {page_num}): {resp.status_code}")
+                if resp.status_code in (400, 401, 403, 429):
+                    break
+                continue
             data = resp.json()
         except Exception as e:
             print(f"[Jobicy] Error fetching jobs (page {page_num}): {e}")

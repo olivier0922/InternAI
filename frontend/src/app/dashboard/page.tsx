@@ -37,20 +37,12 @@ export default function DashboardPage() {
       let from = 0
       let hasMore = true
       
-      const orConditions = userSkills.length > 0 
-        ? userSkills.map(skill => `title.ilike.%${skill}%`).join(',')
-        : null
-
       while (hasMore && allJobs.length < 5000) { // Safety cap at 5000 jobs
         let query = supabase
           .from('jobs')
           .select('*')
           .order('created_at', { ascending: false })
           .range(from, from + batchSize - 1)
-          
-        if (orConditions) {
-          query = query.or(orConditions)
-        }
 
         const { data: batch } = await query
 

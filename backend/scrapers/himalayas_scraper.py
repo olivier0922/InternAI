@@ -4,6 +4,7 @@ Fetches remote-first tech job listings from the free Himalayas API.
 No API key required.
 """
 import httpx
+import os
 import re
 from typing import List
 import sys
@@ -16,11 +17,14 @@ def scrape_himalayas_jobs() -> List[JobCreate]:
     """Fetch remote tech jobs from Himalayas.app free public API."""
     jobs: List[JobCreate] = []
 
+    max_offset = int(os.getenv("HIMALAYAS_MAX_OFFSET", "1000"))
+    page_size = int(os.getenv("HIMALAYAS_PAGE_SIZE", "100"))
+
     # Paginate to get more results
-    for offset in range(0, 500, 100):
+    for offset in range(0, max_offset, page_size):
         url = "https://himalayas.app/jobs/api"
         params = {
-            "limit": 100,
+            "limit": page_size,
             "offset": offset,
         }
 

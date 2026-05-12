@@ -3,6 +3,7 @@ LinkedIn Jobs Scraper (via Scrapling StealthyFetcher)
 Scrapes LinkedIn's public guest job search pages for multiple queries.
 No login required — uses LinkedIn's public job listing pages.
 """
+import os
 import re
 import time
 import sys
@@ -22,25 +23,6 @@ def _first(selectors):
 
 # Search queries to run
 SEARCH_QUERIES = [
-    # ── Montreal General ──
-    ("software engineer", "Montreal, QC"),
-    ("developer", "Montreal, QC"),
-    ("data scientist", "Montreal, QC"),
-    ("devops", "Montreal, QC"),
-    ("machine learning", "Montreal, QC"),
-    ("frontend developer", "Montreal, QC"),
-    ("backend developer", "Montreal, QC"),
-    ("python developer", "Montreal, QC"),
-    ("java developer", "Montreal, QC"),
-    ("react developer", "Montreal, QC"),
-    ("cloud engineer", "Montreal, QC"),
-    ("QA engineer", "Montreal, QC"),
-    ("data engineer", "Montreal, QC"),
-    ("full stack developer", "Montreal, QC"),
-    ("web developer", "Montreal, QC"),
-    ("AI engineer", "Montreal, QC"),
-    ("product manager", "Montreal, QC"),
-
     # ── Montreal Intern Queries ──
     ("intern", "Montreal, QC"),
     ("stage", "Montreal, QC"),
@@ -53,73 +35,54 @@ SEARCH_QUERIES = [
     ("stagiaire informatique", "Montreal, QC"),
     ("frontend intern", "Montreal, QC"),
     ("backend intern", "Montreal, QC"),
+    ("internship", "Montreal, QC"),
 
     # ── Toronto ──
-    ("software engineer", "Toronto, ON"),
-    ("developer", "Toronto, ON"),
     ("software intern", "Toronto, ON"),
-    ("data scientist", "Toronto, ON"),
-    ("frontend developer", "Toronto, ON"),
-    ("backend developer", "Toronto, ON"),
-    ("full stack developer", "Toronto, ON"),
-    ("devops", "Toronto, ON"),
-    ("machine learning", "Toronto, ON"),
     ("intern", "Toronto, ON"),
+    ("internship", "Toronto, ON"),
+    ("co-op", "Toronto, ON"),
 
     # ── Vancouver ──
-    ("software engineer", "Vancouver, BC"),
-    ("developer", "Vancouver, BC"),
     ("software intern", "Vancouver, BC"),
-    ("data scientist", "Vancouver, BC"),
+    ("intern", "Vancouver, BC"),
+    ("co-op", "Vancouver, BC"),
 
     # ── Ottawa ──
-    ("software engineer", "Ottawa, ON"),
-    ("developer", "Ottawa, ON"),
     ("software intern", "Ottawa, ON"),
+    ("intern", "Ottawa, ON"),
+    ("co-op", "Ottawa, ON"),
 
-    # ── Canada-wide ──
-    ("software engineer", "Canada"),
-    ("python developer", "Canada"),
-    ("react developer", "Canada"),
-    ("full stack developer", "Canada"),
-    ("intern software", "Canada"),
-    ("data engineer", "Canada"),
-    ("machine learning", "Canada"),
-    ("cloud engineer", "Canada"),
-    ("devops", "Canada"),
+    # ── Other Cities ──
+    ("software intern", "Calgary, AB"),
+    ("software intern", "Edmonton, AB"),
+    ("software intern", "Winnipeg, MB"),
+    ("software intern", "Halifax, NS"),
+    ("software intern", "Quebec City, QC"),
+    ("software intern", "Kitchener, ON"),
+    ("software intern", "Waterloo, ON"),
 
-    # ── US Major Cities ──
-    ("software engineer", "New York, NY"),
-    ("developer", "New York, NY"),
-    ("software intern", "New York, NY"),
-    ("software engineer", "San Francisco, CA"),
-    ("developer", "San Francisco, CA"),
-    ("software intern", "San Francisco, CA"),
-    ("software engineer", "Seattle, WA"),
-    ("developer", "Seattle, WA"),
-    ("software engineer", "Austin, TX"),
-    ("software engineer", "Chicago, IL"),
-    ("software engineer", "Boston, MA"),
-    ("software engineer", "Los Angeles, CA"),
-
-    # ── Global/Remote ──
-    ("software engineer intern", ""),
-    ("frontend developer", "Remote"),
-    ("backend developer", "Remote"),
-    ("data engineer", "Remote"),
-    ("software engineer", "Remote"),
-    ("full stack developer", "Remote"),
-    ("machine learning engineer", "Remote"),
-    ("devops engineer", "Remote"),
-    ("python developer", "Remote"),
+    # ── Canada-wide & Remote ──
+    ("software intern", "Canada"),
+    ("intern", "Canada"),
+    ("co-op", "Canada"),
+    ("internship", "Canada"),
+    ("student", "Canada"),
 ]
+
+LINKEDIN_TIME_RANGE = os.getenv("LINKEDIN_TIME_RANGE", "r2592000")
+LINKEDIN_MAX_START = int(os.getenv("LINKEDIN_MAX_START", "500"))
+LINKEDIN_PAGE_DELAY = float(os.getenv("LINKEDIN_PAGE_DELAY", "1.0"))
+LINKEDIN_QUERY_DELAY = float(os.getenv("LINKEDIN_QUERY_DELAY", "0.5"))
+LINKEDIN_SKILL_LIMIT = int(os.getenv("LINKEDIN_SKILL_LIMIT", "8"))
+LINKEDIN_BLOCK_LIMIT = int(os.getenv("LINKEDIN_BLOCK_LIMIT", "5"))
 
 def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
     """Scrape LinkedIn public job listings using Scrapling's StealthyFetcher."""
     
     queries = list(SEARCH_QUERIES)
     if dynamic_skills:
-        for skill in dynamic_skills[:3]:
+        for skill in dynamic_skills[:LINKEDIN_SKILL_LIMIT]:
             queries.insert(0, (f"{skill} developer", "Montreal, QC"))
             queries.insert(0, (f"{skill} engineer", "Canada"))
             
@@ -131,24 +94,31 @@ def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
 
     jobs: List[JobCreate] = []
     seen_urls = set()
+    blocked_count = 0
 
     for keywords, location in queries:
         # Scale up to 10 pages (250 jobs per query)
-        for start_idx in range(0, 100, 25):
+        for start_idx in range(0, LINKEDIN_MAX_START + 1, 25):
             try:
                 kw = keywords.replace(' ', '%20')
                 loc = location.replace(' ', '%20').replace(',', '%2C')
                 # Add delay to avoid immediate blocking from heavy pagination
                 if start_idx > 0:
-                    time.sleep(2.5)
-                full_url = f"https://www.linkedin.com/jobs/search/?keywords={kw}&location={loc}&f_TPR=r604800&start={start_idx}"
+                    time.sleep(LINKEDIN_PAGE_DELAY)
+                full_url = f"https://www.linkedin.com/jobs/search/?keywords={kw}&location={loc}&f_TPR={LINKEDIN_TIME_RANGE}&start={start_idx}"
                 print(f"  [LinkedIn] Searching: '{keywords}' in '{location}' (start={start_idx})...")
 
                 page = StealthyFetcher.fetch(full_url, headless=True, network_idle=True)
 
                 if page.status != 200:
                     print(f"  [LinkedIn] Got status {page.status}")
+                    if page.status in (403, 429, 999):
+                        blocked_count += 1
+                        if blocked_count >= LINKEDIN_BLOCK_LIMIT:
+                            print("  [LinkedIn] Too many blocks, stopping early.")
+                            return jobs
                     continue
+                blocked_count = 0
 
                 job_cards = page.css('div.base-card')
                 if not job_cards or len(job_cards) == 0:
@@ -211,11 +181,11 @@ def scrape_linkedin_jobs(dynamic_skills: List[str] = None) -> List[JobCreate]:
                     except Exception:
                         continue
 
-                time.sleep(2)
+                time.sleep(LINKEDIN_QUERY_DELAY)
             except Exception as e:
                 print(f"  [LinkedIn] Error during scraping '{keywords}': {e}")
                 
-        time.sleep(1.5)
+            time.sleep(LINKEDIN_QUERY_DELAY)
 
     return jobs
 
