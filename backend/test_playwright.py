@@ -9,7 +9,7 @@ with sync_playwright() as p:
     page.click('button[type="submit"]')
     page.wait_for_url("http://localhost:3000/dashboard")
     page.goto("http://localhost:3000/resume")
-    page.set_input_files('input[type="file"]', "C:/Users/olimi/OneDrive - ETS/jobfinder/test_resume.pdf")
+    page.set_input_files('input[type="file"]', "C:/Users/olimi/OneDrive - ETS/InternAI/test_resume.pdf")
     
     with page.expect_response("http://127.0.0.1:8001/api/v1/resume/upload") as response_info:
         page.click('button[type="submit"]')
