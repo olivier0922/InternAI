@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from typing import List
 
 groq_api_key = os.environ.get("GROQ_API_KEY", "")
-client = instructor.patch(Groq(api_key=groq_api_key)) if groq_api_key else None
+client = instructor.from_groq(Groq(api_key=groq_api_key)) if groq_api_key else None
 
 class MatchResult(BaseModel):
     score: int = Field(..., description="Match score from 0 to 100", ge=0, le=100)

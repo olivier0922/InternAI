@@ -42,7 +42,7 @@ export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }:
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8001'}/api/v1/ai/match`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/v1/ai/match`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
