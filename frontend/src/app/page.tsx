@@ -42,11 +42,6 @@ export default function Home() {
       {/* Hero */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pb-20">
         <div className="space-y-6 max-w-3xl">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass text-xs text-muted-foreground">
-            <Zap className="w-3 h-3 text-yellow-400" />
-            338 real jobs from 4 live sources
-          </div>
 
           {/* Heading */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.08]">
@@ -81,7 +76,7 @@ export default function Home() {
             {
               icon: Search,
               title: "Real-time search",
-              desc: "Instant results as you type. Search across 338+ jobs from Remotive, Arbeitnow, and Hacker News.",
+              desc: "Instant results as you type. Search across hundreds of jobs from LinkedIn, Indeed, Glassdoor, Remotive, Arbeitnow, and Hacker News.",
             },
             {
               icon: Brain,
