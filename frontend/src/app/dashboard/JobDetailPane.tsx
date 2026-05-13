@@ -3,6 +3,7 @@
 import { MapPin, Globe, Building2, ExternalLink, Tag, Clock } from 'lucide-react'
 import { JobCardActions } from './JobCardActions'
 import type { ScoredJob } from './useJobFilters'
+import { companyColor } from './HorizontalJobCard'
 
 function timeAgo(dateStr: string): string {
   const now = Date.now()
@@ -31,7 +32,7 @@ export function JobDetailPane({ job, isSaved }: { job: ScoredJob; isSaved: boole
 
         <div className="relative flex items-start justify-between mb-5 sm:mb-6">
           <div className="flex items-center gap-3 sm:gap-4 pr-8">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-white text-lg sm:text-xl font-bold shadow-[0_0_20px_rgba(99,102,241,0.3)] border border-white/10 shrink-0">
+            <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${companyColor(job.company)} flex items-center justify-center text-white text-lg sm:text-xl font-bold shadow-[0_0_20px_rgba(99,102,241,0.3)] border border-white/10 shrink-0`}>
               {initials}
             </div>
             <div>
@@ -80,7 +81,7 @@ export function JobDetailPane({ job, isSaved }: { job: ScoredJob; isSaved: boole
       </div>
 
       {/* Scrollable Body */}
-      <div className="flex-1 overflow-y-auto p-5 sm:p-8 space-y-6 sm:space-y-8 custom-scrollbar pb-24 sm:pb-8">
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-8 space-y-6 sm:space-y-8 custom-scrollbar pb-24 sm:pb-8">
         {/* Tags */}
         {job.tags && job.tags.length > 0 && (
           <div>

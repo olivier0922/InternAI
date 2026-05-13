@@ -18,7 +18,7 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(days / 30)}mo ago`
 }
 
-function companyColor(name: string): string {
+export function companyColor(name: string): string {
   const colors = [
     'from-indigo-500 to-purple-600', 'from-emerald-500 to-teal-600',
     'from-amber-500 to-orange-600', 'from-rose-500 to-pink-600',
