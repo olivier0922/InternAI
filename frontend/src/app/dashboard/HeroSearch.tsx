@@ -50,22 +50,22 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
           
           {/* What Input */}
           <div className="flex-1 relative flex items-center border-b md:border-b-0 md:border-r border-white/[0.08]">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-[22px] w-[22px] text-primary/70" />
+            <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
             <input type="text" placeholder="Job title, company, or skill..." value={localWhat} onChange={(e) => setLocalWhat(e.target.value)}
-              className="w-full h-[60px] pl-[52px] pr-4 bg-transparent text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
+              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
             {localWhat && <button onClick={() => setLocalWhat('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-white/[0.08] transition-colors"><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>}
           </div>
 
           {/* Where Input */}
-          <div className="flex-1 relative flex items-center">
-            <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 h-[22px] w-[22px] text-primary/70" />
+          <div className="flex-1 relative flex items-center border-b md:border-b-0 border-white/[0.08]">
+            <MapPin className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
             <input type="text" placeholder="City, state, or zip..." value={localWhere} onChange={(e) => setLocalWhere(e.target.value)}
-              className="w-full h-[60px] pl-[52px] pr-4 bg-transparent text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
+              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
             {localWhere && <button onClick={() => setLocalWhere('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-white/[0.08] transition-colors"><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>}
           </div>
 
           <button onClick={() => setFilters(f => ({ ...f, remoteOnly: !f.remoteOnly }))}
-            className={`h-[60px] px-8 font-bold flex items-center justify-center gap-2.5 transition-all duration-300 shrink-0 md:border-l border-white/[0.08] ${filters.remoteOnly ? 'gradient-btn text-white' : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-white/[0.05]'}`}>
+            className={`h-12 md:h-[60px] px-6 md:px-8 font-bold flex items-center justify-center gap-2.5 transition-all duration-300 shrink-0 md:border-l border-white/[0.08] ${filters.remoteOnly ? 'gradient-btn text-white' : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-white/[0.05]'}`}>
             <Globe className={`w-5 h-5 ${filters.remoteOnly ? 'text-white' : 'text-primary/70'}`} />Remote
           </button>
         </div>
@@ -73,11 +73,11 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
 
       {/* Quick Search Suggestions (only when no search query) */}
       {!localWhat && (
-        <div className="flex items-center gap-2 px-2 flex-wrap animate-fade-in">
-          <span className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-wider mr-1">Trending</span>
+        <div className="flex items-center gap-2 px-1 md:px-2 overflow-x-auto whitespace-nowrap custom-scrollbar pb-1 -mb-1 animate-fade-in">
+          <span className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-wider mr-1 sticky left-0 bg-background/80 backdrop-blur-sm pr-2 py-1">Trending</span>
           {POPULAR_SEARCHES.map(term => (
             <button key={term} onClick={() => setLocalWhat(term)}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.08] hover:border-primary/30 transition-all duration-200">
+              className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.08] text-muted-foreground hover:text-foreground hover:bg-white/[0.08] hover:border-primary/30 transition-all duration-200 shrink-0">
               {term}
             </button>
           ))}
@@ -85,15 +85,15 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
       )}
 
       {/* Filter Bar */}
-      <div className="flex items-center gap-4 px-2 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-1 md:px-2">
         {/* Date Filter Chips */}
-        <div className="flex items-center gap-1.5">
-          <div className="w-6 h-6 rounded-md bg-white/[0.04] flex items-center justify-center border border-white/[0.08] mr-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap custom-scrollbar pb-1 sm:pb-0 -mb-1 sm:mb-0">
+          <div className="w-6 h-6 shrink-0 rounded-md bg-white/[0.04] flex items-center justify-center border border-white/[0.08] mr-1">
             <Calendar className="w-3.5 h-3.5 text-primary/80" />
           </div>
           {DATE_OPTIONS.map(opt => (
             <button key={opt.value} onClick={() => setFilters(f => ({ ...f, datePosted: opt.value }))}
-              className={`text-[12px] font-medium px-3 py-1.5 rounded-lg transition-all duration-200 ${
+              className={`text-[12px] font-medium px-3 py-1.5 rounded-lg transition-all duration-200 shrink-0 ${
                 filters.datePosted === opt.value
                   ? 'bg-primary/20 text-primary border border-primary/40 shadow-[0_0_10px_rgba(99,102,241,0.2)]'
                   : 'bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-white/[0.05]'
@@ -104,7 +104,7 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
         </div>
 
         {/* Results + Clear */}
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="flex items-center gap-3 sm:ml-auto">
           {hasActiveFilters && (
             <button onClick={clearAllFilters} className="text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:text-red-300 transition-all duration-200 flex items-center gap-1.5">
               <X className="w-3.5 h-3.5" />Reset

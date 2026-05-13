@@ -114,7 +114,7 @@ export default function SignupPage() {
         Home
       </Link>
 
-      <div className="relative w-full max-w-md animate-fade-in">
+      <div className="relative w-full max-w-md animate-fade-in mx-4 sm:mx-auto">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <div className="w-10 h-10 rounded-xl gradient-btn flex items-center justify-center">
@@ -124,7 +124,7 @@ export default function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-2xl p-8">
+        <div className="glass-card rounded-2xl p-6 sm:p-8">
           <Suspense fallback={<div className="flex justify-center p-4"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
             <SignupForm />
           </Suspense>

@@ -230,7 +230,7 @@ export default function ResumePage() {
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${
+              className={`relative border-2 border-dashed rounded-2xl p-6 sm:p-12 text-center transition-all duration-300 ${
                 dragActive
                   ? 'border-primary bg-primary/[0.06]'
                   : file
@@ -240,8 +240,8 @@ export default function ResumePage() {
             >
               {file ? (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                    <File className="w-7 h-7 text-emerald-400" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                    <File className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-400" />
                   </div>
                   <div>
                     <p className="font-medium text-sm">{file.name}</p>
@@ -259,11 +259,11 @@ export default function ResumePage() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center animate-float">
-                    <UploadCloud className="w-7 h-7 text-muted-foreground" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center animate-float">
+                    <UploadCloud className="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="font-medium text-sm">
+                    <p className="font-medium text-sm sm:text-base">
                       Drop your resume here or{' '}
                       <label className="text-primary cursor-pointer hover:text-primary/80 transition-colors">
                         browse

@@ -49,9 +49,9 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   }, [handleScroll])
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] w-full max-w-[1200px] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1200px] mx-auto">
       {/* Top Search Area */}
-      <div className="shrink-0 mb-5 mt-2">
+      <div className="shrink-0 mb-4 sm:mb-5 mt-2">
         <HeroSearch
           filters={filters}
           setFilters={(f) => {

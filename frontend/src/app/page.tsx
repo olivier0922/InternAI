@@ -44,26 +44,26 @@ export default function Home() {
         <div className="space-y-6 max-w-3xl">
 
           {/* Heading */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.08]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">
             <span className="block">Your next</span>
             <span className="gradient-text inline-block">engineering role</span>
             <span className="block">starts here.</span>
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
+          <p className="mx-auto max-w-xl text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed px-4">
             Real-time job aggregation. AI resume matching. Application tracking. One platform built specifically for engineering students.
           </p>
 
           {/* CTA */}
-          <div className="flex gap-3 justify-center pt-2">
-            <Link href="/signup">
-              <button className="gradient-btn text-white font-semibold px-7 py-3 rounded-xl text-sm flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 px-4 sm:px-0">
+            <Link href="/signup" className="w-full sm:w-auto">
+              <button className="w-full sm:w-auto gradient-btn text-white font-semibold px-7 py-3.5 sm:py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                 Start Free <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
-            <Link href="/login">
-              <button className="glass text-foreground font-medium px-7 py-3 rounded-xl text-sm hover:bg-white/[0.06] transition-colors">
+            <Link href="/login" className="w-full sm:w-auto">
+              <button className="w-full sm:w-auto glass text-foreground font-medium px-7 py-3.5 sm:py-3 rounded-xl text-sm hover:bg-white/[0.06] transition-colors">
                 Sign In
               </button>
             </Link>
@@ -71,7 +71,7 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full">
+        <div className="mt-16 sm:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full">
           {[
             {
               icon: Search,
@@ -104,10 +104,12 @@ export default function Home() {
               desc: "Your resume and data stay encrypted. We never share with third parties.",
             },
           ].map((f) => (
-            <div key={f.title} className="glass-card rounded-xl p-5 text-left">
-              <f.icon className="w-5 h-5 text-primary mb-3" />
-              <h3 className="font-semibold text-sm mb-1.5">{f.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+            <div key={f.title} className="glass-card rounded-xl p-5 sm:p-6 text-left">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <f.icon className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-[15px] mb-2">{f.title}</h3>
+              <p className="text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>

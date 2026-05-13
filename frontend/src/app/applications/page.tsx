@@ -49,22 +49,22 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 lg:p-8">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       <div className="space-y-6">
         {/* Header */}
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Applications</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Applications</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Track your job search pipeline · {applications?.length || 0} total
           </p>
         </div>
 
         {/* Kanban board */}
-        <div className="flex gap-4 overflow-x-auto pb-4 items-start">
+        <div className="flex gap-4 overflow-x-auto pb-4 items-start snap-x snap-mandatory custom-scrollbar">
           {columns.map(({ key: status, color }) => {
             const columnApps = applications?.filter(app => app.status === status) || []
             return (
-              <div key={status} className="flex-1 min-w-[260px] space-y-3">
+              <div key={status} className="flex-1 min-w-[85vw] sm:min-w-[260px] snap-center space-y-3">
                 {/* Column header */}
                 <div className="flex items-center justify-between px-1 mb-1">
                   <div className="flex items-center gap-2">
