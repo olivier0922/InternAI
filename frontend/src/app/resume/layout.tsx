@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Sidebar } from '@/components/Sidebar'
 import { Loader2 } from 'lucide-react'
 
 export default function DashboardLayout({
@@ -38,11 +37,8 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar userEmail={userEmail || ''} />
-      <main className="flex-1 ml-[220px]">
-        {children}
-      </main>
-    </div>
+    <main className="w-full min-h-[calc(100dvh-64px)]">
+      {children}
+    </main>
   )
 }

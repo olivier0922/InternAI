@@ -13,34 +13,11 @@ import {
 
 export default function Home() {
   return (
-    <div className="relative flex flex-col min-h-screen overflow-hidden">
+    <div className="relative flex flex-col min-h-[calc(100dvh-64px)] overflow-hidden">
       <div className="mesh-bg" />
 
-      {/* Navigation */}
-      <header className="relative z-10 px-6 py-5 flex items-center justify-between max-w-6xl mx-auto w-full">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg gradient-btn flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-lg tracking-tight">InternAI</span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Log in
-          </Link>
-          <Link href="/signup">
-            <button className="gradient-btn text-white text-sm font-medium px-4 py-2 rounded-lg">
-              Get Started
-            </button>
-          </Link>
-        </nav>
-      </header>
-
       {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pb-20">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pb-safe pt-12 md:pt-20">
         <div className="space-y-6 max-w-3xl">
 
           {/* Heading */}

@@ -23,6 +23,16 @@ export const metadata: Metadata = {
   ],
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+}
+
+import { TopNav } from '@/components/TopNav'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} antialiased`}>
+        <TopNav />
         {children}
         <Toaster theme="dark" position="bottom-right" />
       </body>

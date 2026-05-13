@@ -26,13 +26,17 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   // Reset visible count when filters change
   useEffect(() => {
     setVisibleCount(JOBS_PER_PAGE)
-    if (scrollRef.current) scrollRef.current.scrollTop = 0
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [filters])
 
   // Infinite scroll handler
   const handleScroll = useCallback(() => {
-    if (!scrollRef.current || isLoadingMore || !hasMore) return
-    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current
+    if (isLoadingMore || !hasMore) return
+    
+    const scrollTop = window.scrollY || document.documentElement.scrollTop
+    const scrollHeight = document.documentElement.scrollHeight
+    const clientHeight = window.innerHeight
+
     if (scrollHeight - scrollTop - clientHeight < 300) {
       setIsLoadingMore(true)
       setTimeout(() => {
@@ -43,14 +47,12 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   }, [isLoadingMore, hasMore])
 
   useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    el.addEventListener('scroll', handleScroll)
-    return () => el.removeEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1600px] mx-auto">
+    <div className="flex flex-col min-h-[calc(100dvh-64px)] w-full max-w-3xl mx-auto px-4 sm:px-6">
       {/* Top Search Area */}
       <div className="shrink-0 mb-4 sm:mb-5 mt-2">
         <HeroSearch
@@ -63,9 +65,9 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
         />
       </div>
 
-      {/* Job List — Full Width (no map) */}
-      <div className="flex-1 min-h-0">
-        <div ref={scrollRef} className="h-full overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-6">
+      {/* Job List */}
+      <div className="flex-1 min-h-0 mb-6">
+        <div ref={scrollRef} className="h-full pr-2 space-y-3 pb-safe">
           {visibleJobs.length > 0 ? (
             <>
               <AnimatePresence mode="popLayout">

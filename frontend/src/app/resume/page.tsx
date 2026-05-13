@@ -185,7 +185,7 @@ export default function ResumePage() {
   }
 
   return (
-    <div className="min-h-screen p-6 lg:p-8">
+    <div className="min-h-[calc(100dvh-64px)] p-6 lg:p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
         <div className="space-y-1">
