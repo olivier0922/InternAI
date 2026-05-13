@@ -110,7 +110,7 @@ export function JobDetailPane({ job, isSaved }: { job: ScoredJob; isSaved: boole
       </div>
 
       {/* Footer Actions */}
-      <div className="shrink-0 p-4 sm:p-8 pb-safe sm:pb-8 border-t border-white/[0.08] bg-[#030305]/80 backdrop-blur-xl relative z-10">
+      <div className="shrink-0 p-5 sm:p-8 border-t border-white/[0.06] bg-[#09090b] relative z-10">
         <JobCardActions jobId={job.id} jobUrl={job.url} isSaved={isSaved} />
       </div>
     </div>
