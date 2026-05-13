@@ -29,10 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased`}>
+    <html lang="en" className="w-full overflow-x-hidden bg-background text-foreground">
+      <body className={`${inter.variable} antialiased w-full overflow-x-hidden min-h-screen flex flex-col`}>
         {children}
-        <Toaster theme="dark" position="bottom-right" />
+        <Toaster theme="light" position="bottom-right" />
       </body>
     </html>
   );

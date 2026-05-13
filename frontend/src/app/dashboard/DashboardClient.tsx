@@ -50,9 +50,9 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   }, [handleScroll])
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1600px] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1600px] mx-auto overflow-hidden">
       {/* Top Search Area */}
-      <div className="shrink-0 mb-4 sm:mb-5 mt-2">
+      <div className="shrink-0 mb-4 mt-2 px-4 lg:px-0">
         <HeroSearch
           filters={filters}
           setFilters={(f) => {
@@ -63,72 +63,99 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
         />
       </div>
 
-      {/* Job List — Full Width (no map) */}
-      <div className="flex-1 min-h-0">
-        <div ref={scrollRef} className="h-full overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-6">
-          {visibleJobs.length > 0 ? (
-            <>
-              <AnimatePresence mode="popLayout">
-                {visibleJobs.map((job) => (
-                  <motion.div
-                    key={job.id}
-                    layout
-                    initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                  >
-                    <HorizontalJobCard
-                      job={job}
-                      onClick={() => setSelectedJob(job)}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              {/* Load more indicator */}
-              {hasMore && (
-                <div className="flex items-center justify-center py-6">
-                  {isLoadingMore ? (
-                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  ) : (
-                    <span className="text-xs text-muted-foreground/50">
-                      Showing {visibleJobs.length} of {filteredJobs.length} · Scroll for more
-                    </span>
-                  )}
+      {/* Split-Pane Content Area */}
+      <div className="flex-1 min-h-0 flex lg:gap-6 px-4 lg:px-0 pb-4">
+        
+        {/* Left Pane: Job List */}
+        <div className="w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 h-full overflow-hidden flex flex-col">
+          <div ref={scrollRef} className="h-full overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-6">
+            {visibleJobs.length > 0 ? (
+              <>
+                <AnimatePresence mode="popLayout">
+                  {visibleJobs.map((job) => (
+                    <motion.div
+                      key={job.id}
+                      layout
+                      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                    >
+                      <HorizontalJobCard
+                        job={job}
+                        onClick={() => setSelectedJob(job)}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {/* Load more indicator */}
+                {hasMore && (
+                  <div className="flex items-center justify-center py-6">
+                    {isLoadingMore ? (
+                      <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                    ) : (
+                      <span className="text-xs text-gray-400">
+                        Showing {visibleJobs.length} of {filteredJobs.length} · Scroll for more
+                      </span>
+                    )}
+                  </div>
+                )}
+                {!hasMore && filteredJobs.length > JOBS_PER_PAGE && (
+                  <div className="flex items-center justify-center py-4">
+                    <span className="text-xs text-gray-400">All {filteredJobs.length} results loaded</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-32 text-center bg-white rounded-2xl border border-dashed border-gray-200">
+                <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+                  <Briefcase className="w-7 h-7 text-gray-400" />
                 </div>
-              )}
-              {!hasMore && filteredJobs.length > JOBS_PER_PAGE && (
-                <div className="flex items-center justify-center py-4">
-                  <span className="text-xs text-muted-foreground/40">All {filteredJobs.length} results loaded</span>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-32 text-center glass-card rounded-2xl border-dashed">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mb-4">
-                <Briefcase className="w-7 h-7 text-muted-foreground/50" />
+                <h3 className="text-base font-semibold text-gray-900 mb-1">No jobs match your search</h3>
+                <p className="text-sm text-gray-500 max-w-sm mb-4">
+                  Try adjusting your search terms, expanding filters, or checking different sources.
+                </p>
+                <button
+                  onClick={() => setFilters(DEFAULT_FILTERS)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                >
+                  Clear all filters
+                </button>
               </div>
-              <h3 className="text-base font-semibold mb-1">No jobs match your search</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mb-4">
-                Try adjusting your search terms, expanding filters, or checking different sources.
+            )}
+          </div>
+        </div>
+
+        {/* Right Pane: Job Details (Desktop Only) */}
+        <div className="hidden lg:flex flex-1 h-full overflow-hidden">
+          {selectedJob ? (
+            <JobDetailDrawer
+              job={selectedJob as unknown as import('./useJobFilters').ScoredJob}
+              isSaved={savedJobIds.has(selectedJob.id)}
+              onClose={() => setSelectedJob(null)}
+            />
+          ) : (
+            <div className="w-full h-full rounded-2xl border border-gray-200 bg-gray-50/50 flex flex-col items-center justify-center text-center p-8">
+              <div className="w-16 h-16 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center mb-4">
+                <Briefcase className="w-8 h-8 text-gray-300" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a job</h3>
+              <p className="text-sm text-gray-500 max-w-sm">
+                Click on any job card from the list to view its full description, required skills, and application options here.
               </p>
-              <button
-                onClick={() => setFilters(DEFAULT_FILTERS)}
-                className="px-4 py-2 rounded-lg text-sm font-medium glass hover:bg-white/5 transition-colors"
-              >
-                Clear all filters
-              </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Job Detail Drawer */}
-      <JobDetailDrawer
-        job={selectedJob as unknown as import('./useJobFilters').ScoredJob}
-        isSaved={selectedJob ? savedJobIds.has(selectedJob.id) : false}
-        onClose={() => setSelectedJob(null)}
-      />
+      {/* Mobile Drawer (Hidden on LG screens) */}
+      <div className="lg:hidden">
+        <JobDetailDrawer
+          job={selectedJob as unknown as import('./useJobFilters').ScoredJob}
+          isSaved={selectedJob ? savedJobIds.has(selectedJob.id) : false}
+          onClose={() => setSelectedJob(null)}
+        />
+      </div>
     </div>
   )
 }
