@@ -20,8 +20,20 @@ export function TopNav() {
   const supabase = createClient()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user))
-  }, [])
+    // Get initial user
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data?.user)
+    })
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
