@@ -10,3 +10,6 @@ pytest
 httpx
 python-dotenv
 scrapling[fetchers]
+beautifulsoup4
+feedparser
+requests
