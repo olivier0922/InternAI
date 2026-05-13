@@ -52,9 +52,9 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   }, [handleScroll])
 
   return (
-    <div className="flex flex-col min-h-[calc(100dvh-64px)] w-full max-w-[1600px] mx-auto px-4 sm:px-6">
+    <div className="flex flex-col h-[calc(100dvh-64px)] w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-4">
       {/* Top Search Area */}
-      <div className="shrink-0 mb-4 sm:mb-5 mt-2">
+      <div className="shrink-0 mb-6">
         <HeroSearch
           filters={filters}
           setFilters={(f) => {
@@ -66,11 +66,11 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
       </div>
 
       {/* Main Content Area - Split Pane */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr] gap-6 lg:gap-8 pb-6 min-h-0">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr] gap-6 lg:gap-8 pb-4">
         
         {/* Left Column: Job List */}
-        <div className="flex flex-col h-[calc(100dvh-180px)] lg:h-[calc(100dvh-140px)]">
-          <div ref={scrollRef} className="flex-1 overflow-y-auto pr-2 space-y-3 pb-safe custom-scrollbar">
+        <div className="flex flex-col min-h-0 h-full">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 space-y-4 pb-safe custom-scrollbar">
             {visibleJobs.length > 0 ? (
               <>
                 <AnimatePresence mode="popLayout">
@@ -129,7 +129,7 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
         </div>
 
         {/* Right Column: Detail Pane (Desktop Only) */}
-        <div className="hidden lg:block h-[calc(100dvh-140px)] sticky top-24">
+        <div className="hidden lg:flex flex-col min-h-0 h-full">
           {selectedJob ? (
             <JobDetailPane
               job={selectedJob as unknown as import('./useJobFilters').ScoredJob}
