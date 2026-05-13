@@ -17,7 +17,7 @@ export default function Home() {
       <div className="mesh-bg" />
 
       {/* Navigation */}
-      <header className="relative z-10 px-4 sm:px-6 py-5 flex items-center justify-between max-w-6xl mx-auto w-full">
+      <header className="relative z-10 px-6 py-5 flex items-center justify-between max-w-6xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg gradient-btn flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
@@ -40,7 +40,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 pb-20 pt-10 sm:pt-20">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 pb-20">
         <div className="space-y-6 max-w-3xl">
 
           {/* Heading */}
@@ -51,19 +51,19 @@ export default function Home() {
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto max-w-xl text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed">
+          <p className="mx-auto max-w-xl text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed px-4">
             Real-time job aggregation. AI resume matching. Application tracking. One platform built specifically for engineering students.
           </p>
 
           {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 px-4 sm:px-0">
             <Link href="/signup" className="w-full sm:w-auto">
               <button className="w-full sm:w-auto gradient-btn text-white font-semibold px-7 py-3.5 sm:py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                 Start Free <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
             <Link href="/login" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-white border border-gray-200 text-gray-900 font-medium px-7 py-3.5 sm:py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors shadow-sm">
+              <button className="w-full sm:w-auto glass text-foreground font-medium px-7 py-3.5 sm:py-3 rounded-xl text-sm hover:bg-white/[0.06] transition-colors">
                 Sign In
               </button>
             </Link>
@@ -105,8 +105,8 @@ export default function Home() {
             },
           ].map((f) => (
             <div key={f.title} className="glass-card rounded-xl p-5 sm:p-6 text-left">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
-                <f.icon className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <f.icon className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-semibold text-[15px] mb-2">{f.title}</h3>
               <p className="text-[13px] text-muted-foreground leading-relaxed">{f.desc}</p>
@@ -116,7 +116,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-6 text-center text-xs text-muted-foreground border-t border-gray-100 bg-white/50 backdrop-blur-sm">
+      <footer className="relative z-10 py-6 text-center text-xs text-muted-foreground/60 border-t border-white/[0.04]">
         © {new Date().getFullYear()} InternAI · Built for engineering students
       </footer>
     </div>
