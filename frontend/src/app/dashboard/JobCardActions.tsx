@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Brain, Bookmark, ExternalLink, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }: { jobId: string, jobUrl: string, isSaved?: boolean }) {
   const [loadingAI, setLoadingAI] = useState(false)
@@ -15,7 +16,10 @@ export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }:
 
   const saveApplication = async (status: string) => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) {
+      toast.error('Sign in required', { description: 'Please sign in to save jobs.' })
+      return
+    }
 
     const { data: existing } = await supabase
       .from('applications')
@@ -34,13 +38,23 @@ export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }:
   const handleSave = async () => {
     setSaved(true)
     await saveApplication('Saved')
+    toast.success('Job Saved', { description: 'Added to your applications tracker.' })
+  }
+
+  const handleApply = async () => {
+    await saveApplication('Applied')
+    toast.success('Tracked as Applied', { description: 'Moved to applied in your tracker.' })
   }
 
   const handleAI = async () => {
     setLoadingAI(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
+      if (!session) {
+        toast.error('Sign in required')
+        setLoadingAI(false)
+        return
+      }
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/v1/ai/match`, {
         method: 'POST',
@@ -53,15 +67,16 @@ export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }:
 
       if (!res.ok) {
         const err = await res.json()
-        alert(err.detail || 'Upload a resume first to use AI Match.')
+        toast.error('Match failed', { description: err.detail || 'Upload a resume first to use AI Match.' })
         setLoadingAI(false)
         return
       }
 
       const data = await res.json()
       setMatchData(data)
+      toast.success('Match complete', { description: `You are a ${data.score}% match for this role.` })
     } catch {
-      alert("Failed to connect to AI service.")
+      toast.error('Connection error', { description: 'Failed to connect to AI service.' })
     }
     setLoadingAI(false)
   }
@@ -129,7 +144,7 @@ export function JobCardActions({ jobId, jobUrl, isSaved: initialSaved = false }:
           {loadingAI ? 'Matching…' : 'AI Match'}
         </button>
 
-        <Link href={jobUrl} target="_blank" onClick={() => saveApplication('Applied')} className="flex-1">
+        <Link href={jobUrl} target="_blank" onClick={handleApply} className="flex-1">
           <button className="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-medium gradient-btn text-white">
             Apply <ExternalLink className="w-2.5 h-2.5" />
           </button>

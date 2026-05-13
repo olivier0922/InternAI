@@ -43,30 +43,30 @@ export function HeroSearch({ filters, setFilters, totalResults }: Props) {
 
   return (
     <div className="w-full space-y-4">
-      {/* Premium Search Bar */}
+      {/* Command Palette Search Bar */}
       <div className="relative group">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-fuchsia-500/30 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
-        <div className="relative flex flex-col md:flex-row bg-[#0c0c16]/80 backdrop-blur-xl rounded-2xl border border-white/[0.1] shadow-2xl overflow-hidden glass-card">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-fuchsia-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+        <div className="relative flex flex-col md:flex-row bg-[#09090b] rounded-2xl border border-[#27272a] shadow-xl overflow-hidden transition-colors group-hover:border-[#3f3f46]">
           
           {/* What Input */}
-          <div className="flex-1 relative flex items-center border-b md:border-b-0 md:border-r border-white/[0.08]">
-            <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
+          <div className="flex-1 relative flex items-center border-b md:border-b-0 md:border-r border-[#27272a]">
+            <Search className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input type="text" placeholder="Job title, company, or skill..." value={localWhat} onChange={(e) => setLocalWhat(e.target.value)}
-              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
+              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.02] transition-colors" />
             {localWhat && <button onClick={() => setLocalWhat('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-white/[0.08] transition-colors"><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>}
           </div>
 
           {/* Where Input */}
-          <div className="flex-1 relative flex items-center border-b md:border-b-0 border-white/[0.08]">
-            <MapPin className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
+          <div className="flex-1 relative flex items-center border-b md:border-b-0 border-[#27272a]">
+            <MapPin className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input type="text" placeholder="City, state, or zip..." value={localWhere} onChange={(e) => setLocalWhere(e.target.value)}
-              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.03] transition-colors" />
+              className="w-full h-12 md:h-[60px] pl-[48px] md:pl-[52px] pr-4 bg-transparent text-[15px] md:text-[16px] font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:bg-white/[0.02] transition-colors" />
             {localWhere && <button onClick={() => setLocalWhere('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-white/[0.08] transition-colors"><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>}
           </div>
 
           <button onClick={() => setFilters(f => ({ ...f, remoteOnly: !f.remoteOnly }))}
-            className={`h-12 md:h-[60px] px-6 md:px-8 font-bold flex items-center justify-center gap-2.5 transition-all duration-300 shrink-0 md:border-l border-white/[0.08] ${filters.remoteOnly ? 'gradient-btn text-white' : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-white/[0.05]'}`}>
-            <Globe className={`w-5 h-5 ${filters.remoteOnly ? 'text-white' : 'text-primary/70'}`} />Remote
+            className={`h-12 md:h-[60px] px-6 md:px-8 font-bold flex items-center justify-center gap-2.5 transition-all duration-300 shrink-0 md:border-l border-[#27272a] ${filters.remoteOnly ? 'bg-primary text-primary-foreground' : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-white/[0.03]'}`}>
+            <Globe className={`w-5 h-5 ${filters.remoteOnly ? 'text-primary-foreground' : 'text-muted-foreground'}`} />Remote
           </button>
         </div>
       </div>

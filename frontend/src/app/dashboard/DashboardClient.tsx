@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { Briefcase, Loader2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useJobFilters, type Job, type FilterState, DEFAULT_FILTERS } from './useJobFilters'
 import { HeroSearch } from './HeroSearch'
 import { HorizontalJobCard } from './HorizontalJobCard'
@@ -49,7 +50,7 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
   }, [handleScroll])
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1200px] mx-auto">
+    <div className="flex flex-col h-[calc(100vh-140px)] lg:h-[calc(100vh-64px)] w-full max-w-[1600px] mx-auto">
       {/* Top Search Area */}
       <div className="shrink-0 mb-4 sm:mb-5 mt-2">
         <HeroSearch
@@ -67,13 +68,23 @@ export function DashboardClient({ initialJobs, savedJobIds, userSkills }: { init
         <div ref={scrollRef} className="h-full overflow-y-auto pr-2 custom-scrollbar space-y-3 pb-6">
           {visibleJobs.length > 0 ? (
             <>
-              {visibleJobs.map((job) => (
-                <HorizontalJobCard
-                  key={job.id}
-                  job={job}
-                  onClick={() => setSelectedJob(job)}
-                />
-              ))}
+              <AnimatePresence mode="popLayout">
+                {visibleJobs.map((job) => (
+                  <motion.div
+                    key={job.id}
+                    layout
+                    initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  >
+                    <HorizontalJobCard
+                      job={job}
+                      onClick={() => setSelectedJob(job)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
               {/* Load more indicator */}
               {hasMore && (
                 <div className="flex items-center justify-center py-6">

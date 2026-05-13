@@ -88,23 +88,23 @@
    Premium Dark Theme — Navy/Violet Design System
    ═══════════════════════════════════════════════════════════ */
 .dark {
-  --background: #030305;
-  --foreground: #f4f4f5;
-  --card: rgba(255, 255, 255, 0.02);
-  --card-foreground: #f4f4f5;
+  --background: #000000;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
   --popover: #09090b;
-  --popover-foreground: #f4f4f5;
+  --popover-foreground: #fafafa;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: rgba(255, 255, 255, 0.04);
-  --secondary-foreground: #e4e4e7;
-  --muted: rgba(255, 255, 255, 0.05);
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
   --muted-foreground: #a1a1aa;
-  --accent: rgba(99, 102, 241, 0.15);
-  --accent-foreground: #c7d2fe;
-  --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.06);
-  --input: rgba(255, 255, 255, 0.06);
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #7f1d1d;
+  --border: #27272a;
+  --input: #27272a;
   --ring: #6366f1;
   --chart-1: #6366f1;
   --chart-2: #8b5cf6;
@@ -112,13 +112,13 @@
   --chart-4: #f43f5e;
   --chart-5: #06b6d4;
   --radius: 0.75rem;
-  --sidebar: #050508;
-  --sidebar-foreground: #f4f4f5;
+  --sidebar: #09090b;
+  --sidebar-foreground: #fafafa;
   --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(99, 102, 241, 0.1);
-  --sidebar-accent-foreground: #c7d2fe;
-  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
   --sidebar-ring: #6366f1;
 }
 
@@ -131,37 +131,36 @@
     font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Premium Glassmorphism Utilities
+   Premium Glassmorphism & Card Utilities
    ═══════════════════════════════════════════════════════════ */
 .glass {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 .glass-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #09090b;
+  border: 1px solid #27272a;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 0 20px 0 rgba(99, 102, 241, 0.1);
+  background: #0c0c11;
+  border-color: #3f3f46;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.1);
   transform: translateY(-2px);
 }
 

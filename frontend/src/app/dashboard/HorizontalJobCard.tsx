@@ -52,26 +52,24 @@ export function HorizontalJobCard({ job, onClick }: {
   const initials = job.company.split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase()
 
   return (
-    <div onClick={onClick}
-      className="relative group cursor-pointer animate-fade-in block">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/10 to-violet-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-      <div className="relative glass-card rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col md:flex-row gap-4 sm:gap-5 transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-primary/20">
+    <div onClick={onClick} className="relative group cursor-pointer block">
+      <div className="relative glass-card rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col md:flex-row gap-4 sm:gap-5 transition-all duration-300">
         
         {/* Company Logo / Avatar & Mobile Header container */}
         <div className="flex items-start gap-4 md:shrink-0">
-          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${companyColor(job.company)} flex items-center justify-center text-white text-base sm:text-lg font-bold shrink-0 shadow-lg border border-white/10 relative overflow-hidden group-hover:scale-105 transition-transform duration-300`}>
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
+          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${companyColor(job.company)} flex items-center justify-center text-white text-base sm:text-lg font-bold shrink-0 shadow-md border border-white/5 relative overflow-hidden group-hover:scale-105 transition-transform duration-300`}>
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
             <span className="relative z-10">{initials}</span>
           </div>
           
           {/* Mobile Title (shows only on small screens) */}
           <div className="md:hidden flex-1 min-w-0">
-            <h3 className="font-bold text-[16px] sm:text-[18px] leading-snug group-hover:text-primary transition-colors line-clamp-2 tracking-tight">
+            <h3 className="font-semibold text-[16px] sm:text-[18px] leading-snug group-hover:text-primary transition-colors line-clamp-2 tracking-tight">
               {job.title}
             </h3>
-            <div className="flex items-center gap-2 text-[13px] text-muted-foreground mt-1 font-medium">
+            <div className="flex items-center gap-2 text-[13px] text-muted-foreground mt-1">
               <span className="truncate">{job.company}</span>
-              <span className="w-1 h-1 rounded-full bg-white/20 shrink-0" />
+              <span className="w-1 h-1 rounded-full bg-white/10 shrink-0" />
               <span className="shrink-0">{timeAgo(job.created_at)}</span>
             </div>
           </div>
@@ -80,80 +78,80 @@ export function HorizontalJobCard({ job, onClick }: {
         <div className="flex-1 min-w-0 flex flex-col justify-between">
           <div>
             <div className="hidden md:flex items-start justify-between gap-3 mb-1.5">
-              <h3 className="font-bold text-[17px] sm:text-[19px] leading-snug group-hover:text-primary transition-colors line-clamp-1 tracking-tight">
+              <h3 className="font-semibold text-[17px] sm:text-[19px] leading-snug group-hover:text-primary transition-colors line-clamp-1 tracking-tight">
                 {job.title}
               </h3>
               <div className="flex items-center gap-2 shrink-0 pt-0.5">
                 {showMatch && (
-                  <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-md bg-gradient-to-r from-primary/20 to-violet-500/20 text-primary border border-primary/30 uppercase tracking-widest shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                    <Sparkles className="w-3 h-3 fill-primary/40" />Match
+                  <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">
+                    <Sparkles className="w-3 h-3" />Match
                   </span>
                 )}
                 {isNew && !showMatch && (
-                  <span className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest">
+                  <span className="text-[10px] font-bold px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest">
                     New
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-2.5 text-[13px] sm:text-sm text-muted-foreground mb-3 font-medium">
-              <div className="flex items-center gap-1.5 text-foreground/80">
-                <Building2 className="w-4 h-4 text-primary/70" />
+            <div className="hidden md:flex items-center gap-2.5 text-[13px] sm:text-sm text-muted-foreground mb-3">
+              <div className="flex items-center gap-1.5 text-foreground/80 font-medium">
+                <Building2 className="w-4 h-4 text-muted-foreground" />
                 {job.company}
               </div>
-              <span className="w-1 h-1 rounded-full bg-white/20" />
-              <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${sourceColor(job.source)}`}>
+              <span className="w-1 h-1 rounded-full bg-white/10" />
+              <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${sourceColor(job.source)}`}>
                 {job.source}
               </span>
             </div>
 
             {/* Mobile Badges (shows only on small screens) */}
             <div className="md:hidden flex items-center gap-2 mb-3">
-              <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${sourceColor(job.source)}`}>
+              <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${sourceColor(job.source)}`}>
                 {job.source}
               </span>
               {showMatch && (
-                  <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-primary/20 to-violet-500/20 text-primary border border-primary/30 uppercase tracking-widest shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                    <Sparkles className="w-2.5 h-2.5 fill-primary/40" />Match
+                  <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">
+                    <Sparkles className="w-2.5 h-2.5" />Match
                   </span>
               )}
               {isNew && !showMatch && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest">
                     New
                   </span>
               )}
             </div>
 
-            <p className="text-[13px] text-muted-foreground/80 line-clamp-2 md:line-clamp-2 leading-relaxed mb-4 max-w-3xl">
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-4 max-w-3xl line-clamp-2">
               {job.description}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 mt-auto">
             {job.location && (
-              <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground/80 bg-white/[0.03] px-2 py-1 rounded-lg border border-white/[0.05]">
-                <MapPin className="w-3.5 h-3.5 text-muted-foreground/60" />
+              <span className="chip">
+                <MapPin className="w-3.5 h-3.5 opacity-70" />
                 {job.location.length > 30 ? job.location.substring(0, 30) + '…' : job.location}
               </span>
             )}
             {job.remote && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-indigo-500/[0.08] text-indigo-300 border border-indigo-500/[0.15]">
-                <Globe className="w-3 h-3" />Remote
+              <span className="chip text-indigo-300 border-indigo-500/20 bg-indigo-500/10">
+                <Globe className="w-3 h-3 opacity-70" />Remote
               </span>
             )}
             {job.salary && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] text-emerald-400 border border-emerald-500/[0.15]">
+              <span className="chip text-emerald-400 border-emerald-500/20 bg-emerald-500/10">
                 💰 {job.salary.length > 30 ? job.salary.substring(0, 30) + '…' : job.salary}
               </span>
             )}
             {job.job_type && job.job_type !== 'Full-time' && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/[0.08] text-amber-300 border border-amber-500/[0.15]">
+              <span className="chip text-amber-300 border-amber-500/20 bg-amber-500/10">
                 {job.job_type}
               </span>
             )}
             {job.tags?.slice(0, 3).map(tag => (
-              <span key={tag} className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-lg bg-white/[0.03] text-muted-foreground/70 border border-white/[0.06] hover:bg-white/[0.06] transition-colors">
+              <span key={tag} className="chip">
                 <Tag className="w-2.5 h-2.5 opacity-50" />{tag}
               </span>
             ))}

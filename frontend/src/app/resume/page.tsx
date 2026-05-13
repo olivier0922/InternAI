@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react'
 import { UploadCloud, FileText, CheckCircle2, File, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 // Comprehensive tech skill list for client-side extraction
 const KNOWN_SKILLS = [
@@ -168,10 +169,16 @@ export default function ResumePage() {
 
       setSkills(extractedSkills)
       setSuccess(true)
+      toast.success('Resume uploaded successfully', {
+        description: `Extracted ${extractedSkills.length} skills for AI matching.`,
+      })
 
     } catch (err) {
       console.error('Resume upload error:', err)
       setError((err as Error).message || 'An error occurred')
+      toast.error('Upload failed', {
+        description: (err as Error).message || 'An error occurred during upload.',
+      })
     } finally {
       setLoading(false)
     }
