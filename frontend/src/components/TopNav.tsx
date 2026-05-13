@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Sparkles, LayoutDashboard, FileText, Briefcase, Menu, LogOut, User } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -14,6 +14,7 @@ const LINKS = [
 
 export function TopNav() {
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const supabase = createClient()
@@ -24,7 +25,7 @@ export function TopNav() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    window.location.href = '/'
+    router.push('/')
   }
 
   return (
